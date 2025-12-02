@@ -1,235 +1,194 @@
 <script lang="ts">
-  import { Camera, Calendar, Home, Trophy, Sprout, ShoppingBag, AlertTriangle, Video } from 'lucide-svelte';
-  
-  let plants = [
-    {
-      name: 'Mango',
-      water: 'VERY LOW',
-      due: 'Stable',
-      bgColor: 'bg-[#FF6B6B]',
-      emoji: '🥭'
+  import { 
+    Trophy, 
+    Leaf, 
+    Calendar, 
+  } from 'lucide-svelte';
+
+  // State to manage the active tab/screen
+  let activeTab: 'home' | 'events' | 'ranks' | 'shop' = 'home';
+
+  // --- Mock Data ---
+  const PLANTS = [
+    { 
+      id: 1, 
+      name: 'Mango', 
+      type: 'Fruit Tree',
+      status: 'critical', 
+      image: '🥭',
+      statusDetails: 'Water: Sufficient, Sunlight: Critical',
+      mapPosition: { top: '65%', left: '30%' }
     },
-    {
-      name: 'Carrot',
-      water: 'Stable',
-      due: 'Low',
-      bgColor: 'bg-[#FFA94D]',
-      emoji: '🥕'
+    { 
+      id: 2, 
+      name: 'Carrot', 
+      type: 'Root Vegetable',
+      status: 'warning', 
+      image: '🥕',
+      statusDetails: 'Water: Sufficient, Sunlight: Insufficient',
+      mapPosition: { top: '35%', left: '70%' }
     },
-    {
-      name: 'Tomato',
-      water: 'Stable',
-      due: 'Stable',
-      bgColor: 'bg-[#F5F0E8]',
-      emoji: '🍅'
+    { 
+      id: 3, 
+      name: 'Tomato', 
+      type: 'Heritage Beefsteak',
+      status: 'healthy', 
+      image: '🍅',
+      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
+      mapPosition: { top: '50%', left: '45%' }
     },
-    {
-      name: 'Pear',
-      water: 'Stable',
-      due: 'Stable',
-      bgColor: 'bg-[#F5F0E8]',
-      emoji: '🍐'
+    { 
+      id: 4, 
+      name: 'Pear', 
+      type: 'Fruit Tree',
+      status: 'healthy', 
+      image: '🍐',
+      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
+      mapPosition: { top: '40%', left: '25%' }
     },
-    {
-      name: 'Basil',
-      water: 'Good',
-      due: 'Stable',
-      bgColor: 'bg-[#A8E6CF]',
-      emoji: '🌿'
+    { 
+      id: 5, 
+      name: 'Basil', 
+      type: 'Herb',
+      status: 'healthy', 
+      image: '🌿',
+      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
+      mapPosition: { top: '70%', left: '60%' }
     }
   ];
 
-  let events = [
+  const EVENTS = [
     {
-      title: 'Nature Three Days: Connecting with Nature to Inspire Future Action',
-      description: 'From 23 to 25 May, NZ students immersed themselves in the MDT Rotoehuee project—a unique three-day experience designed to help them connect with nature and reflect on its place in their personal and professional lives.',
-      image: '/event-1.jpg',
-      date: 'June 21-23 2025',
-      time: '05:00PM',
-      attendees: '0.8k'
+      id: 1,
+      title: "Nature Three Days: Connecting with Nature",
+      subtitle: "A unique three-day experience designed to help students connect with nature.",
+      date: "21-11-2025",
+      time: "05:00 PM",
+      xp: 50,
+      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
     },
     {
-      title: 'Urban Gardening Workshop: Growing Food in Small Spaces',
-      description: 'Join us for a hands-on workshop where you will learn essential techniques for maximizing yield in limited spaces. Perfect for apartment dwellers and urban farmers looking to grow their own fresh produce.',
-      image: '/event-2.jpg',
-      date: 'July 10 2025',
-      time: '02:00PM',
-      attendees: '1.2k'
-    },
-    {
-      title: 'Sustainable Farming Conference 2025',
-      description: 'A two-day conference bringing together farmers, researchers, and sustainability advocates to discuss innovative farming practices, climate adaptation strategies, and the future of agriculture in a changing world.',
-      image: '/event-3.jpg',
-      date: 'Aug 15-16 2025',
-      time: '09:00AM',
-      attendees: '2.5k'
+      id: 2,
+      title: "Students Gardening Workshop",
+      subtitle: "A fun workshop for students to learn about gardening and plants care essentials.",
+      date: "Mar 15, 2026",
+      time: "10:00 AM",
+      xp: 30,
+      image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=800",
     }
   ];
+
+  // --- Helpers ---
+  const statusColors: Record<string, string> = {
+    critical: 'bg-red-500',
+    warning: 'bg-amber-400',
+    healthy: 'bg-green-500',
+  };
+
+  const statusBorders: Record<string, string> = {
+    critical: 'border-red-400',
+    warning: 'border-amber-300',
+    healthy: 'border-stone-200'
+  };
 </script>
 
-<div class="min-h-screen bg-[#F5F0E8] pb-20">
-  <header class="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl mx-auto">
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif italic">Home</h1>
-    <div class="flex items-center gap-2">
-      <Trophy class="w-5 h-5 sm:w-6 sm:h-6" />
-      <span class="text-base sm:text-lg italic">Rank: #6</span>
-    </div>
-  </header>
-
-  <div class="max-w-7xl mx-auto">
-    <div class="px-4 sm:px-6 lg:px-8 mb-4">
-      <div class="flex items-center gap-2 mb-1">
-        <Video class="w-5 h-5" />
-        <span class="font-bold">Duckbot live</span>
-        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-      </div>
-      <p class="text-sm italic text-gray-700">Current task: check tomato plant #2's health</p>
-    </div>
-
-    <div class="px-4 sm:px-6 lg:px-8 mb-6">
-      <div class="relative rounded-3xl overflow-hidden border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-        <video 
-          class="w-full h-48 sm:h-64 lg:h-80 object-cover bg-gray-900"
-          poster=""
-          controls
-        >
-          <track kind="captions" />
-        </video>
-      </div>
-    </div>
-
-    <div class="px-4 sm:px-6 lg:px-8 mb-6">
-      <div class="flex items-center gap-2 mb-4">
-        <Sprout class="w-6 h-6" />
-        <h2 class="text-xl sm:text-2xl font-bold italic">Your plants ({plants.length})</h2>
-        <AlertTriangle class="w-5 h-5 text-red-500" />
-      </div>
+  <div class="max-w-7xl mx-auto w-full">
+      <header class="flex justify-between items-center px-6 pt-8 pb-6 md:pb-10">
+        <div>
+          <h1 class="font-serif text-4xl md:text-5xl italic font-bold text-stone-900">Home</h1>
+          <p class="text-stone-500 hidden md:block mt-2">Welcome back to your digital forest.</p>
+        </div>
+        <a href="/ranks" class="flex items-center space-x-2 bg-stone-200 px-3 py-1 md:px-5 md:py-2 rounded-full transition hover:bg-stone-300 cursor-pointer">
+          <Trophy class="w-4 h-4 md:w-5 md:h-5 text-stone-600" />
+          <span class="font-serif font-bold text-stone-800 text-sm md:text-base">Rank: #6</span>
+        </a>
+      </header>
       
-      <div class="flex lg:grid lg:grid-cols-5 gap-3 overflow-x-auto lg:overflow-x-visible pb-2 scrollbar-hide">
-        {#each plants as plant}
-          <div class="{plant.bgColor} rounded-2xl p-4 min-w-[140px] lg:min-w-0 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <div class="flex items-start gap-2 mb-2">
-              {#if plant.name === 'Mango' || plant.name === 'Carrot'}
-                <AlertTriangle class="w-4 h-4 text-red-600" />
-              {/if}
-              <span class="font-bold text-sm sm:text-base">{plant.name}</span>
-            </div>
-            <div class="text-4xl mb-3 text-center">{plant.emoji}</div>
-            <div class="text-xs sm:text-sm">
-              <div class="mb-1">
-                <span class="italic">Water: </span>
-                <span class="font-bold {plant.water === 'VERY LOW' ? 'text-red-700' : ''}">{plant.water}</span>
-              </div>
-              <div>
-                <span class="italic">Due: </span>
-                <span class="font-bold {plant.due === 'Low' ? 'text-yellow-700' : ''}">{plant.due}</span>
-              </div>
-            </div>
+      <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-6 pb-12">
+        
+        <section class="space-y-4 lg:col-span-8">
+          <div class="flex items-center space-x-2">
+            <Leaf class="w-6 h-6 text-stone-800 fill-current" />
+            <h2 class="font-serif text-2xl italic font-bold text-stone-800">Your plants</h2>
           </div>
-        {/each}
-      </div>
-    </div>
-
-    <div class="px-4 sm:px-6 lg:px-8 mb-6">
-      <div class="flex items-center gap-2 mb-4">
-        <Calendar class="w-6 h-6" />
-        <h2 class="text-xl sm:text-2xl font-bold italic">Upcoming Events</h2>
-      </div>
-
-      <div class="space-y-4">
-        {#each events as event}
-          <div class="bg-white rounded-2xl overflow-hidden border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <div class="p-4">
-              <div class="flex gap-4 mb-3">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                  <img src={event.image || "/placeholder.svg"} alt="Event" class="w-full h-full object-cover" />
+      
+          <div class="relative overflow-hidden bg-stone-200 rounded-xl shadow-lg border border-stone-200 min-h-[300px] md:min-h-[500px]">
+            <img 
+              src="https://media.istockphoto.com/id/1322626419/photo/garden-with-walkways-and-green-grass-photo-taken-from-above-drone.jpg?s=612x612&w=0&k=20&c=qUGuF4V5_NMH5yKai_vxgx7oL7_3gYd3PzLVhjWWzDQ=" 
+              class="w-full h-full object-cover opacity-90" 
+              alt="Garden Map"
+            />
+            
+            {#each PLANTS as plant}
+              <button
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 group z-10 transition-transform hover:scale-110"
+                style="top: {plant.mapPosition.top}; left: {plant.mapPosition.left};"
+              >
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-sm md:text-lg text-white {statusColors[plant.status]}">
+                  {plant.image}
                 </div>
-                <div class="flex-1 min-w-0">
-                  <h3 class="font-bold text-sm sm:text-base mb-2 leading-tight">{event.title}</h3>
-                  <p class="text-xs sm:text-sm leading-tight text-gray-700 line-clamp-3">{event.description}</p>
+                <div class="absolute top-10 md:top-12 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20 pointer-events-none">
+                  {plant.name}
                 </div>
-              </div>
-              
-              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <button class="bg-[#2DD4BF] hover:bg-[#14B8A6] text-black font-bold px-6 py-2 rounded-lg text-sm border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">
-                  Register now
-                </button>
-                
-                <div class="flex items-center gap-3 text-xs">
-                  <div class="flex items-center gap-1">
-                    <Calendar class="w-3 h-3" />
-                    <span>{event.date}</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span>🕐</span>
-                    <span>{event.time}</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span>👥</span>
-                    <span>{event.attendees}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </button>
+            {/each}
           </div>
-        {/each}
-      </div>
-    </div>
+      
+          <div class="flex overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-2 xl:grid-cols-3 gap-3 md:overflow-visible scrollbar-hide">
+            {#each PLANTS as plant}
+              <button class="flex-shrink-0 w-auto md:w-full bg-white rounded-full md:rounded-xl px-4 py-2 md:p-3 flex items-center space-x-3 shadow-sm border cursor-pointer hover:shadow-md active:scale-95 transition {statusBorders[plant.status]}">
+                <div class="w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center text-sm md:text-base text-white {statusColors[plant.status]} shrink-0">
+                  {plant.image}
+                </div>
+                <div class="text-left">
+                  <span class="block text-xs md:text-sm font-bold text-stone-800">{plant.name}</span>
+                  <span class="text-[10px] md:text-xs text-stone-500 whitespace-nowrap md:whitespace-normal line-clamp-1">{plant.statusDetails}</span>
+                </div>
+              </button>
+            {/each}
+          </div>
+        </section>
+      
+        <section class="space-y-4 lg:col-span-4">
+          <div class="flex items-center space-x-2">
+            <Calendar class="w-6 h-6 text-stone-800" />
+            <h2 class="font-serif text-2xl italic font-bold text-stone-800">Upcoming Events</h2>
+          </div>
+      
+          <div class="space-y-4">
+            {#each EVENTS.slice(0, 2) as event}
+              <button class="w-full text-left bg-white rounded-2xl overflow-hidden shadow-md border border-stone-100 cursor-pointer hover:shadow-lg active:scale-[0.98] transition group">
+                <div class="flex lg:flex-col xl:flex-row">
+                  <div class="w-1/3 lg:w-full xl:w-1/3 h-32 lg:h-40 xl:h-32 relative">
+                    <img src={event.image} alt={event.title} class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  </div>
+                  
+                  <div class="w-2/3 lg:w-full xl:w-2/3 p-3 flex flex-col justify-between">
+                    <div>
+                      <h3 class="font-serif text-sm md:text-base font-bold leading-tight text-stone-800 mb-1">{event.title}</h3>
+                      <p class="text-[10px] md:text-xs text-stone-500 line-clamp-2 italic">{event.subtitle}</p>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-3">
+                      <span class="bg-black text-white text-[10px] px-3 py-1.5 rounded-full font-bold group-hover:bg-green-600 transition-colors">
+                        Register
+                      </span>
+                      <div class="text-[9px] text-stone-500 font-mono space-y-0.5 text-right">
+                         <div class="flex items-center justify-end space-x-1">
+                           <Calendar class="w-3 h-3" /> <span>{event.date}</span>
+                         </div>
+                         <div class="text-green-600 font-bold">★ XP: {event.xp}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            {/each}
+          </div>
+          
+          <button on:click={() => activeTab = 'events'} class="hidden lg:block w-full py-2 text-center text-sm font-bold text-stone-500 hover:text-green-700 transition">
+            View all events →
+          </button>
+        </section>
+      </main>
   </div>
-
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t-4 border-black">
-    <div class="flex items-center justify-around py-3 px-2 max-w-7xl mx-auto">
-      <a href="/" class="flex flex-col items-center gap-1 text-[#2DD4BF]">
-        <div class="bg-[#2DD4BF] p-2 sm:p-3 rounded-xl">
-          <Home class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-        </div>
-        <span class="text-xs font-bold">Home</span>
-      </a>
-      
-      <a href="/events" class="flex flex-col items-center gap-1 hover:text-[#2DD4BF] transition-colors">
-        <div class="p-2 sm:p-3">
-          <Calendar class="w-5 h-5 sm:w-6 sm:h-6" />
-        </div>
-        <span class="text-xs font-bold">Events</span>
-      </a>
-      
-      <a href="/plants" class="flex flex-col items-center gap-1 hover:text-[#2DD4BF] transition-colors">
-        <div class="p-2 sm:p-3">
-          <Sprout class="w-5 h-5 sm:w-6 sm:h-6" />
-        </div>
-        <span class="text-xs font-bold">Plants</span>
-      </a>
-      
-      <a href="/ranks" class="flex flex-col items-center gap-1 hover:text-[#2DD4BF] transition-colors">
-        <div class="p-2 sm:p-3">
-          <Trophy class="w-5 h-5 sm:w-6 sm:h-6" />
-        </div>
-        <span class="text-xs font-bold">Ranks</span>
-      </a>
-      
-      <a href="/shop" class="flex flex-col items-center gap-1 hover:text-[#2DD4BF] transition-colors">
-        <div class="p-2 sm:p-3">
-          <ShoppingBag class="w-5 h-5 sm:w-6 sm:h-6" />
-        </div>
-        <span class="text-xs font-bold">Shop</span>
-      </a>
-    </div>
-  </nav>
-</div>
-
-<style>
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>
