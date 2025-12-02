@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Geist", sans-serif;
+  --font-serif: "Playfair Display", serif;
+}
+
+@layer base {
+  * {
+    @apply outline-none;
+  }
+  body {
+    @apply bg-[#F5F0E8] text-black font-sans;
+  }
+}
