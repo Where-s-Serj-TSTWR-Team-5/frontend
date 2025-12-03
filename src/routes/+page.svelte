@@ -5,8 +5,12 @@
     Calendar, 
   } from 'lucide-svelte';
 
+  import Event from '$lib/components/+Event.svelte';
+
   // State to manage the active tab/screen
   let activeTab: 'home' | 'events' | 'ranks' | 'shop' = 'home';
+
+  let { data } = $props();
 
   // --- Mock Data ---
   const PLANTS = [
@@ -54,27 +58,6 @@
       image: '🌿',
       statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
       mapPosition: { top: '70%', left: '60%' }
-    }
-  ];
-
-  const EVENTS = [
-    {
-      id: 1,
-      title: "Nature Three Days: Connecting with Nature",
-      subtitle: "A unique three-day experience designed to help students connect with nature.",
-      date: "21-11-2025",
-      time: "05:00 PM",
-      xp: 50,
-      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 2,
-      title: "Students Gardening Workshop",
-      subtitle: "A fun workshop for students to learn about gardening and plants care essentials.",
-      date: "Mar 15, 2026",
-      time: "10:00 AM",
-      xp: 30,
-      image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=800",
     }
   ];
 
@@ -156,33 +139,8 @@
           </div>
       
           <div class="space-y-4">
-            {#each EVENTS.slice(0, 2) as event}
-              <button class="w-full text-left bg-white rounded-2xl overflow-hidden shadow-md border border-stone-100 cursor-pointer hover:shadow-lg active:scale-[0.98] transition group">
-                <div class="flex lg:flex-col xl:flex-row">
-                  <div class="w-1/3 lg:w-full xl:w-1/3 h-32 lg:h-40 xl:h-32 relative">
-                    <img src={event.image} alt={event.title} class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                  </div>
-                  
-                  <div class="w-2/3 lg:w-full xl:w-2/3 p-3 flex flex-col justify-between">
-                    <div>
-                      <h3 class="font-serif text-sm md:text-base font-bold leading-tight text-stone-800 mb-1">{event.title}</h3>
-                      <p class="text-[10px] md:text-xs text-stone-500 line-clamp-2 italic">{event.subtitle}</p>
-                    </div>
-                    
-                    <div class="flex items-center justify-between mt-3">
-                      <span class="bg-black text-white text-[10px] px-3 py-1.5 rounded-full font-bold group-hover:bg-green-600 transition-colors">
-                        Register
-                      </span>
-                      <div class="text-[9px] text-stone-500 font-mono space-y-0.5 text-right">
-                         <div class="flex items-center justify-end space-x-1">
-                           <Calendar class="w-3 h-3" /> <span>{event.date}</span>
-                         </div>
-                         <div class="text-green-600 font-bold">★ XP: {event.xp}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </button>
+            {#each data.events.data.slice(0, 5) as event}
+              <Event {event}/>
             {/each}
           </div>
           
