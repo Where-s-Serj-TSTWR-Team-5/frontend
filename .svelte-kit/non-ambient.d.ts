@@ -27,18 +27,19 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/events" | "/plants" | "/ranks" | "/shop";
+		RouteId(): "/" | "/events" | "/events/[id]" | "/plants" | "/ranks" | "/shop";
 		RouteParams(): {
-			
+			"/events/[id]": { id: string }
 		};
 		LayoutParams(): {
-			"/": Record<string, never>;
-			"/events": Record<string, never>;
+			"/": { id?: string };
+			"/events": { id?: string };
+			"/events/[id]": { id: string };
 			"/plants": Record<string, never>;
 			"/ranks": Record<string, never>;
 			"/shop": Record<string, never>
 		};
-		Pathname(): "/" | "/events" | "/events/" | "/plants" | "/plants/" | "/ranks" | "/ranks/" | "/shop" | "/shop/";
+		Pathname(): "/" | "/events" | "/events/" | `/events/${string}` & {} | `/events/${string}/` & {} | "/plants" | "/plants/" | "/ranks" | "/ranks/" | "/shop" | "/shop/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/favicon.png" | string & {};
 	}

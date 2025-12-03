@@ -4,10 +4,11 @@
   let { event } = $props();
 </script>
 
-<button
+<a
+  href={`/events/${event.id}`}
   class="w-full text-left bg-white rounded-3xl overflow-hidden shadow-lg border border-stone-200 cursor-pointer hover:shadow-xl active:scale-[0.98] transition-all group"
 >
-  <div class="flex flex-col">
+  <div class="flex flex-col bg-white">
     <!-- Image -->
     <div class="h-40 relative overflow-hidden">
       <img
@@ -31,11 +32,11 @@
 
       <!-- Footer -->
       <div class="flex items-center justify-between">
-        <span
+        <button
           class="bg-green-600 text-white text-[11px] tracking-wide px-4 py-1.5 rounded-full font-semibold shadow group-hover:bg-green-700 transition"
         >
           Register
-        </span>
+        </button>
 
         <div class="text-[10px] text-stone-500 font-mono text-right space-y-0.5">
           <div class="flex items-center justify-end space-x-1">
@@ -47,4 +48,4 @@
       </div>
     </div>
   </div>
-</button>
+</a>

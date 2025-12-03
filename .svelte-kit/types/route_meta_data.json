@@ -3,6 +3,9 @@
 		"src/routes/+page.server.js"
 	],
 	"/events": [],
+	"/events/[id]": [
+		"src/routes/events/[id]/+page.js"
+	],
 	"/plants": [],
 	"/ranks": [],
 	"/shop": []
