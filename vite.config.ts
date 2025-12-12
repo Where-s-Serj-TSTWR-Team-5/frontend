@@ -6,8 +6,8 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	  server: {
     hmr: {
-      host: 'localhost', // or '127.0.0.1'
-      port: 5173 // match your dev server port
+      host: 'localhost',
+      port: 5173
     }
   }
 });
