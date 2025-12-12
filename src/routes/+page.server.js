@@ -6,24 +6,6 @@ import { PUBLIC_API_URL } from "$env/static/public";
  * @returns 
  */
 export const load = async () => {
-    // fetch appointments urls
-    const appUrls = await getData(`${PUBLIC_API_URL}/events/`);
-    const appUrlsData = appUrls.data;
-
-    console.log(appUrls);
-    
-    // // setup the promises
-    // const promises = appUrlsData.map((url) => getData(`${PUBLIC_API_URL}${url}`));
-
-    // // fetch all appointments
-    // try {
-    //     const appointments = await Promise.all(promises);
-    //     console.log(appointments);
-    //     return { appointments };
-    // } catch (error) {
-    //     console.log('🐮', error);
-    //     return { error };
-    // }
-    const events = appUrls;
+    const events = await getData(`${PUBLIC_API_URL}/events/`);
     return { events }
 };

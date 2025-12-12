@@ -36,7 +36,7 @@
       
       <div class="flex items-center space-x-2">
         <Leaf class="w-7 h-7 text-green-700 fill-green-500" />
-        <span class="font-serif text-xl font-extrabold text-stone-900 hidden lg:block">Fruit Forest</span>
+        <span class=" text-xl font-extrabold text-stone-900 hidden lg:block">Fruit Forest</span>
       </div>
 
       <div class="flex space-x-1 lg:space-x-2">
