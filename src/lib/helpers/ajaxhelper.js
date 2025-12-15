@@ -3,13 +3,13 @@
      * @param url
      */
 export const getData = async (url, fetchFn = fetch) => {
-    try {
-        const response = await fetchFn(url);
-        const items = await response.json();
-        return items;
-    } catch (error) {
-        return error;
+    const response = await fetchFn(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch ${url}`);
     }
+
+    return await response.json();
 };
 
 /**
