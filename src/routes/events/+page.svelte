@@ -4,11 +4,25 @@
 
   let { data } = $props();
 
-  let searchQuery = "";
+  // 1. Use $state so Svelte tracks changes to this variable
+  let searchQuery = $state("");
 
   const filters = ["All", "Gardening", "Sustainability", "Workshops", "Clean-up"];
 
   const events = data.events.data;
+
+  // 2. Use $derived to create a reactive list that updates automatically
+  let filteredEvents = $derived(
+    events.filter((event) => {
+      const query = searchQuery.toLowerCase();
+      // Check title and subtitle (safely)
+      return (
+        event.title.toLowerCase().includes(query) ||
+        (event.subtitle && event.subtitle.toLowerCase().includes(query))
+      );
+    })
+  );
+
   const registeredEvents = events.filter((event) => event.isRegistered);
 </script>
 
@@ -34,9 +48,12 @@
           bind:value={searchQuery}
           class="bg-transparent border-none outline-none text-sm w-full text-stone-800 ml-2"
         />
-        <button on:click={() => (searchQuery = "")}>
-          <X class="w-4 h-4 text-stone-400" />
-        </button>
+        <!-- Only show clear button if there is text -->
+        {#if searchQuery}
+          <button onclick={() => (searchQuery = "")}>
+            <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
+          </button>
+        {/if}
       </div>
     </div>
 
@@ -47,29 +64,21 @@
     <!-- Filters -->
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
       {#each filters as f}
-        <!-- <button
-          on:click={() => (filter = f)}
-          class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${
-            filter === f
-              ? "bg-green-700 text-white border-green-700"
-              : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
-          }`}
-        >
-          {f}
-        </button> -->
+        <!-- <button ... > {f} </button> -->
       {/each}
     </div>
   </header>
 
   <!-- Events Grid -->
   <div class="px-6">
-    {#if events.length === 0}
+    <!-- 3. Use filteredEvents here instead of events -->
+    {#if filteredEvents.length === 0}
       <div class="text-center py-10 text-stone-400">
-        <p>No events available.</p>
+        <p>No events found matching "{searchQuery}".</p>
       </div>
     {:else}
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each events as event (event.id)}
+        {#each filteredEvents as event (event.id)}
           <Event {event} />
         {/each}
       </div>
