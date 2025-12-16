@@ -76,8 +76,8 @@
           <span class="font-bold text-yellow-700">{event.xp} XP</span>
         </div>
         <div class="flex items-center space-x-2">
-          <CreditCard class="w-5 h-5 text-blue-600 shrink-0" />
-          <span class="font-bold text-blue-700"
+          <CreditCard class="w-5 h-5 text-cyan-600 shrink-0" />
+          <span class="font-bold text-cyan-700"
             >{event.studyPoints} ECTS Credits</span
           >
         </div>
