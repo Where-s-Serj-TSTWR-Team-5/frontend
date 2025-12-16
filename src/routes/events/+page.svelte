@@ -2,16 +2,15 @@
   import { Search, X, Calendar, Check, Plus } from "lucide-svelte";
   import Event from "$lib/components/+Event.svelte";
   import CreateModal from "$lib/components/events/+CreateModal.svelte";
+  import { enhance } from "$app/forms";
 
-  // Assuming this component uses SvelteKit's page data
-  let { data } = $props(); // TODO: Implement filter and search
+  let { data } = $props();
 
-  let filter = $state("All"); // Making filter reactive (good practice)
-  let searchQuery = $state(""); // Making searchQuery reactive (good practice)
-  let isSearchOpen = $state(false); // Making isSearchOpen reactive (good practice)
+  let filter = $state("All");
+  let searchQuery = $state("");
+  let isSearchOpen = $state(false);
 
-  // State variable to control modal visibility
-  let isModalOpen = $state(false); // *** THE ESSENTIAL FIX: Use $state() for reactivity! ***
+  let isModalOpen = $state(false);
 
   const filters = [
     "All",
@@ -21,7 +20,7 @@
     "Clean-up",
   ];
 
-  const events = data.events.data; // TODO: Correctly initiate isRegistered with logged in user
+  const events = data.events.data;
   const registeredEvents = events.filter((event) => event.isRegistered);
 
   const openModal = () => {
@@ -37,9 +36,7 @@
   <header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
     <div class="flex justify-between items-start mb-4 h-12">
       <div class={isSearchOpen ? "hidden" : "block"}>
-        <div
-          class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1"
-        >
+        <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">
           Fruit Forest
         </div>
         <h1 class="font-serif text-4xl italic font-bold text-stone-900">
@@ -49,7 +46,7 @@
       <div class="flex items-center space-x-2">
         {#if !isSearchOpen}
           <button
-            on:click={openModal}
+            onclick={openModal}
             class="p-2 rounded-full bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md"
             title="Create New Event"
           >
@@ -65,7 +62,9 @@
         >
           <Search
             class="w-5 h-5 text-stone-500 cursor-pointer"
-            on:click={() => (isSearchOpen = true)}
+            onclick={() => (isSearchOpen = true)}
+            tabindex={0}
+            onkeydown={(e) => (e.key === "Enter" || e.key === " ") && (isSearchOpen = true)}
           />
 
           {#if isSearchOpen}
@@ -75,10 +74,10 @@
                 placeholder="Search events..."
                 bind:value={searchQuery}
                 class="bg-transparent border-none outline-none text-sm w-full text-stone-800"
-                on:blur={() => !searchQuery && (isSearchOpen = false)}
+                onblur={() => !searchQuery && (isSearchOpen = false)}
               />
               <button
-                on:click={() => {
+                onclick={() => {
                   searchQuery = "";
                   isSearchOpen = false;
                 }}
@@ -99,7 +98,7 @@
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
       {#each filters as f}
         <button
-          on:click={() => (filter = f)}
+          onclick={() => (filter = f)}
           class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${
             filter === f
               ? "bg-green-700 text-white border-green-700"
@@ -153,11 +152,22 @@
     </div>
   {/if}
 
-{#if isModalOpen}
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" 
-  >
-    <CreateModal on:close={closeModal} />
-  </div>
-{/if}
+  {#if isModalOpen}
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <form
+        method="POST"
+        action="?/create"
+        use:enhance={() => {
+          return async ({ result }) => {
+            if (result.type === "success") {
+              closeModal();
+              location.reload();
+            }
+          };
+        }}
+      >
+        <CreateModal on:close={closeModal} />
+      </form>
+    </div>
+  {/if}
 </div>
