@@ -19,17 +19,32 @@ export const actions = {
     create: async ({ request, fetch }) => {
         const data = await request.formData();
 
+        // Extract and combine date/time fields into ISO strings
+        const startDate = data.get('startDate');
+        const startTime = data.get('startTime');
+        const endTime = data.get('endTime');
+
+        const startAt =
+            startDate && startTime
+                ? `${startDate}T${startTime}:00Z`
+                : null;
+        const endAt =
+            startDate && endTime
+                ? `${startDate}T${endTime}:00Z`
+                : null;
+
+        // Construct the final payload based on the component's formData structure and API expectation (guessed from old code)
         const eventData = {
             title: data.get('title'),
-            subtitle: data.get('subtitle'),
             description: data.get('description'),
-            category: data.get('category'),
-            date: data.get('date'),
-            time: data.get('time'),
+            thumbnail: data.get('thumbnailUrl'), // Renamed from thumbnailUrl
+            banner: data.get('bannerUrl'), // Renamed from bannerUrl
             location: data.get('location'),
-            xp: Number(data.get('xp')),
+            startAt: startAt, // Combined date and time
+            endAt: endAt, // Combined date and time
             studyPoints: Number(data.get('studyPoints')),
-            imageUrl: data.get('imageUrl'),
+            points: Number(data.get('points')), // Renamed from xp
+            maxParticipants: Number(data.get('maxParticipants')),
         };
 
         const response = await fetch(`${PUBLIC_API_URL}/events/`, {
@@ -41,7 +56,8 @@ export const actions = {
         if (response.ok) {
             return { success: true };
         }
-        
+
+        // You might want to extract error details from the response body for better debugging/feedback
         return { error: 'API request failed.' };
     },
 };

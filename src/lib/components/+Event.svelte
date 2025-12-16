@@ -10,7 +10,7 @@
   <!-- Image -->
   <div class="relative h-44 overflow-hidden">
     <img
-      src={event.image}
+      src={event.thumbnail}
       alt={event.title}
       class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
     />

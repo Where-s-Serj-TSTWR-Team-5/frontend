@@ -8,25 +8,50 @@
 
   let filter = $state("All");
   let searchQuery = $state("");
-  let isSearchOpen = $state(false);
+  let isSearchOpen = $state(false); 
 
-  // modal state
-  let isModalOpen = $state(false);
+  let isModalOpen = $state(false); 
 
-  const filters = ["All", "Gardening", "Sustainability", "Workshops", "Clean-up"];
+  let formData = $state({
+    title: "",
+    description: "",
+    thumbnailUrl: "",
+    bannerUrl: "",
+    startDate: "",
+    startTime: "",
+    endTime: "",
+    location: "",
+    points: 100,
+    studyPoints: 0,
+    maxParticipants: 0,
+  });
+
+  const filters = [
+    "All",
+    "Gardening",
+    "Sustainability",
+    "Workshops",
+    "Clean-up",
+  ];
   const events = data.events.data;
   const registeredEvents = events.filter((event) => event.isRegistered);
 
-  const openModal = () => isModalOpen = true;
-  const closeModal = () => isModalOpen = false;
+  const openModal = () => (isModalOpen = true);
+  const closeModal = () => (isModalOpen = false);
 </script>
 
 <div class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen">
   <header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
     <div class="flex justify-between items-start mb-4 h-12">
       <div class={isSearchOpen ? "hidden" : "block"}>
-        <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">Fruit Forest</div>
-        <h1 class="font-serif text-4xl italic font-bold text-stone-900">Events</h1>
+        <div
+          class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1"
+        >
+          Fruit Forest
+        </div>
+        <h1 class="font-serif text-4xl italic font-bold text-stone-900">
+          Events
+        </h1>
       </div>
       <div class="flex items-center space-x-2">
         {#if !isSearchOpen}
@@ -38,12 +63,15 @@
             <Plus class="w-5 h-5" />
           </button>
         {/if}
-        <div class={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-full bg-stone-100 rounded-lg p-2" : "bg-stone-100 p-2 rounded-full w-10"}`}>
+        <div
+          class={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-full bg-stone-100 rounded-lg p-2" : "bg-stone-100 p-2 rounded-full w-10"}`}
+        >
           <Search
             class="w-5 h-5 text-stone-500 cursor-pointer"
             onclick={() => (isSearchOpen = true)}
             tabindex={0}
-            onkeydown={(e) => (e.key === "Enter" || e.key === " ") && (isSearchOpen = true)}
+            onkeydown={(e) =>
+              (e.key === "Enter" || e.key === " ") && (isSearchOpen = true)}
           />
           {#if isSearchOpen}
             <div class="flex-1 flex items-center ml-2">
@@ -54,7 +82,12 @@
                 class="bg-transparent border-none outline-none text-sm w-full text-stone-800"
                 onblur={() => !searchQuery && (isSearchOpen = false)}
               />
-              <button onclick={() => { searchQuery = ""; isSearchOpen = false; }}>
+              <button
+                onclick={() => {
+                  searchQuery = "";
+                  isSearchOpen = false;
+                }}
+              >
                 <X class="w-4 h-4 text-stone-400" />
               </button>
             </div>
@@ -68,13 +101,14 @@
         Join activities that protect nature & earn rewards.
       </p>
     {/if}
-
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
       {#each filters as f}
         <button
           onclick={() => (filter = f)}
           class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${
-            filter === f ? "bg-green-700 text-white border-green-700" : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
+            filter === f
+              ? "bg-green-700 text-white border-green-700"
+              : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
           }`}
         >
           {f}
@@ -82,10 +116,11 @@
       {/each}
     </div>
   </header>
-
   <div class="px-6">
     {#if events.length === 0}
-      <div class="text-center py-10 text-stone-400"><p>No events available.</p></div>
+      <div class="text-center py-10 text-stone-400">
+        <p>No events available.</p>
+      </div>
     {:else}
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each events as event (event.id)}
@@ -102,7 +137,9 @@
       </h2>
       <div class="space-y-4">
         {#each registeredEvents as event (event.id)}
-          <div class="flex items-center p-3 bg-green-50 rounded-xl shadow-sm border border-green-100">
+          <div
+            class="flex items-center p-3 bg-green-50 rounded-xl shadow-sm border border-green-100"
+          >
             <div class="text-xl mr-3">{event.image?.substring(0, 1)}</div>
             <div class="flex-1">
               <p class="text-sm font-bold text-green-800">{event.title}</p>
@@ -118,7 +155,7 @@
   {/if}
 
   {#if isModalOpen}
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
       <form
         method="POST"
         action="?/create"
@@ -131,7 +168,7 @@
           };
         }}
       >
-        <CreateModal {closeModal} />
+        <CreateModal {closeModal} {formData} />
       </form>
     </div>
   {/if}
