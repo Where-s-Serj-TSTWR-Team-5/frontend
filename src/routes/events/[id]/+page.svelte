@@ -9,8 +9,7 @@
 		Sparkles,
 		Users,
 		TrendingUp,
-        Star,
-		// DollarSign is no longer needed since fee is removed
+		Star, // Already imported, used for Rewards title
 	} from "lucide-svelte";
 
 	// Assuming data prop is passed from SvelteKit load function
@@ -65,6 +64,7 @@
 	};
 
 	const participantStatus = getParticipantStatus();
+	const isFull = event.currentParticipants >= event.maxParticipants;
 </script>
 
 <div
@@ -86,14 +86,14 @@
 			<ChevronLeft class="w-6 h-6" />
 		</button>
 		<div
-			class="absolute inset-0 bg-linear-to-t from-stone-50 via-stone-50/50 to-transparent"
+			class="absolute inset-0 bg-gradient-to-t from-stone-50 via-stone-50/50 to-transparent"
 		></div>
 
 		<div class="absolute bottom-0 left-0 right-0 p-6 pt-10">
 			<span
-				class="text-sm font-bold uppercase tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md"
+				class="text-sm font-bold tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md"
 			>
-				{event.category || "General"}
+				{event.category || "Eco Event"}
 			</span>
 			<h1
 				class="text-4xl lg:text-5xl font-extrabold text-stone-900 mt-2 leading-tight drop-shadow-lg"
@@ -157,15 +157,15 @@
 				class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-stone-200 space-y-5"
 			>
 				<h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
-					<Star class="w-6 h-6 text-green-600" /> Rewards
+					<Star class="w-6 h-6 text-yellow-600" /> Rewards
 				</h2>
 				<div class="space-y-4">
 					<div class="flex justify-between items-center border-b border-stone-100 pb-3">
 						<div class="flex items-center space-x-3">
 							<Trophy class="w-5 h-5 text-yellow-600 shrink-0" />
-							<span class="text-stone-700 font-medium">Experience Points</span>
+							<span class="text-stone-700 font-medium">Points</span>
 						</div>
-						<span class="font-bold text-xl text-yellow-700">{event.xp || event.points || 0} XP</span>
+						<span class="font-bold text-lg text-yellow-700">{event.points || 0} Points</span>
 					</div>
 
 					<div class="flex justify-between items-center">
@@ -173,12 +173,11 @@
 							<Sparkles class="w-5 h-5 text-cyan-600 shrink-0" />
 							<span class="text-stone-700 font-medium">Study Credits</span>
 						</div>
-						<span class="font-bold text-xl text-cyan-700">
+						<span class="font-bold text-lg text-cyan-700">
 							{event.studyPoints || 0} ECTS
 						</span>
 					</div>
-
-					</div>
+				</div>
 			</div>
 
 			<div
@@ -214,12 +213,10 @@
 
 				<div class="pt-4 border-t border-stone-100">
 					<button
-						class="w-full py-3 rounded-xl text-white font-extrabold text-lg bg-green-600 hover:bg-green-700 shadow-xl shadow-green-300/60 transition disabled:bg-green-400 disabled:shadow-none flex items-center justify-center"
-						disabled={event.currentParticipants >= event.maxParticipants}
+						class="w-full py-3 rounded-xl text-white font-extrabold text-lg bg-green-600 hover:bg-green-700 shadow-xl shadow-green-300/60 transition disabled:bg-red-700 disabled:hover:bg-red-700 disabled:shadow-none flex items-center justify-center"
+						disabled={isFull}
 					>
-						{event.currentParticipants >= event.maxParticipants
-							? "Waitlist Full"
-							: "Register Now"}
+						{isFull ? "Full" : "Register Now"}
 					</button>
 				</div>
 			</div>

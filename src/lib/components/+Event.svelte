@@ -7,7 +7,6 @@
 		if (!dateToFormat) return "Date TBD";
 
 		try {
-			// Date part only: e.g., "Dec 16"
 			return new Intl.DateTimeFormat("en-US", {
 				day: "numeric",
 				month: "short",
@@ -20,9 +19,7 @@
 
 	const displayDate = formatDateForCard();
 	
-	const spotsLeft = event.maxParticipants > event.currentParticipants 
-	    ? event.maxParticipants - event.currentParticipants 
-	    : 0;
+	const spotsLeft = event.maxParticipants | 0;
     
     const isFull = event.maxParticipants && spotsLeft === 0;
 </script>
@@ -33,7 +30,7 @@
 >
 	<div class="relative h-44 overflow-hidden">
 		<img
-			src={event.thumbnail}
+			src={event.thumbnail || 'https://picsum.photos/500/700'}
 			alt={event.title}
 			class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
 		/>
