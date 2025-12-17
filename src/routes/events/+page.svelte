@@ -8,9 +8,9 @@
 
   let filter = $state("All");
   let searchQuery = $state("");
-  let isSearchOpen = $state(false); 
+  let isSearchOpen = $state(false);
 
-  let isModalOpen = $state(false); 
+  let isModalOpen = $state(false);
 
   let formData = $state({
     title: "",
@@ -40,11 +40,15 @@
   const closeModal = () => (isModalOpen = false);
 </script>
 
-<div class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen cursor-default">
+<div
+  class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen cursor-default"
+>
   <header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
     <div class="flex justify-between items-start mb-4 h-12">
       <div class={isSearchOpen ? "hidden" : "block"}>
-        <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">
+        <div
+          class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1"
+        >
           Fruit Forest
         </div>
         <h1 class="font-serif text-4xl italic font-bold text-stone-900">
@@ -61,7 +65,7 @@
             <Plus class="w-5 h-5" />
           </button>
         {/if}
-        
+
         <div
           class={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-full bg-stone-100 rounded-lg p-2" : "bg-stone-100 p-2 rounded-full w-10"}`}
         >
@@ -163,11 +167,11 @@
       <form
         method="POST"
         action="?/create"
-        class="w-full"
+        class="w-full max-w-2xl"
         use:enhance={() => {
           return async ({ result }) => {
             if (result.type === "success") {
-              closeModal();
+              // closeModal();
               location.reload();
             }
           };
