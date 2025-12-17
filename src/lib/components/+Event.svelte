@@ -61,11 +61,27 @@
       >
     </div>
 
-    <div
-      class="absolute top-3 right-3 bg-white/90 rounded-full px-3 py-1 flex items-center gap-1 shadow-lg"
-    >
-      <Sparkles class="w-4 h-4 text-cyan-600" />
-      <span class="text-xs font-bold">{event.studyPoints} EC's</span>
+    <div class="absolute top-3 right-3 flex flex-col gap-2 items-end">
+      <div
+        class="bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1 shadow-lg"
+      >
+        <Sparkles class="w-4 h-4 text-cyan-600" />
+        <span class="text-xs font-bold">{event.studyPoints} EC's</span>
+      </div>
+    </div>
+    <div class="absolute bottom-3 right-3 flex flex-col gap-2 items-end">
+      <button
+        type="button"
+        onclick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          openModal();
+        }}
+        class="p-2 rounded-full bg-white/90 backdrop-blur-md text-yellow-600 hover:bg-white transition-all shadow-lg active:scale-90"
+        title="Edit Event"
+      >
+        <Pen class="w-4 h-4" />
+      </button>
     </div>
   </div>
 
@@ -109,19 +125,6 @@
       {/if}
     </div>
 
-    <button
-      type="button"
-      onclick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        openModal();
-      }}
-      class="w-fit p-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-white transition-colors shadow-md cursor-pointer"
-      title="Edit Event"
-    >
-      <Pen class="w-5 h-5" />
-    </button>
-
     <div class="pt-1">
       <div
         class="relative z-10 w-full flex items-center justify-center px-5 py-2 rounded-full text-base font-semibold shadow-lg transition-all duration-200 cursor-pointer
@@ -139,7 +142,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
   >
-    <button class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()}>
+    <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()}>
       <form
         method="POST"
         action="?/update"
@@ -151,8 +154,13 @@
           };
         }}
       >
-        <CreateUpdateModal {closeModal} {formData} action="update" eventId={event.id} />
+        <CreateUpdateModal
+          {closeModal}
+          {formData}
+          action="update"
+          eventId={event.id}
+        />
       </form>
-    </button>
+    </div>
   </div>
 {/if}
