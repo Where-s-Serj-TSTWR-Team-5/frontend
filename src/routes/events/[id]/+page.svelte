@@ -87,6 +87,19 @@
   >
     <div class="lg:col-span-2 space-y-8">
       <div
+        class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-stone-200"
+      >
+        <h2
+          class="text-2xl font-bold text-stone-800 mb-4 flex items-center gap-3"
+        >
+          <TrendingUp class="w-6 h-6 text-green-600" /> About this Event
+        </h2>
+        <p class="text-stone-600 text-base leading-relaxed whitespace-pre-wrap">
+          {event.description ||
+            "No detailed description provided for this event."}
+        </p>
+      </div>
+      <div
         class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-stone-200 space-y-5"
       >
         <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
@@ -133,26 +146,13 @@
           </div>
         </div>
       </div>
-      <div
-        class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-stone-200"
-      >
-        <h2
-          class="text-2xl font-bold text-stone-800 mb-4 flex items-center gap-3"
-        >
-          <TrendingUp class="w-6 h-6 text-green-600" /> About this Event
-        </h2>
-        <p class="text-stone-600 text-base leading-relaxed whitespace-pre-wrap">
-          {event.description ||
-            "No detailed description provided for this event."}
-        </p>
-      </div>
     </div>
     <div class="lg:col-span-1 space-y-8 sticky top-6 self-start">
       <div
         class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-stone-200 space-y-5"
       >
         <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
-          <Star class="w-6 h-6 text-yellow-600" /> Rewards
+          <Star class="w-6 h-6 text-green-600" /> Rewards
         </h2>
         <div class="space-y-4">
           <div
@@ -161,7 +161,8 @@
             <div class="flex items-center space-x-3">
               <Trophy class="w-5 h-5 text-yellow-600 shrink-0" />
               <span class="text-stone-700 font-medium">Points</span>
-            </div><span class="font-bold text-lg text-yellow-700"
+            </div>
+            <span class="font-bold text-lg text-yellow-700"
               >{event.points || 0} Points</span
             >
           </div>
@@ -169,7 +170,8 @@
             <div class="flex items-center space-x-3">
               <Sparkles class="w-5 h-5 text-cyan-600 shrink-0" />
               <span class="text-stone-700 font-medium">Study Credits</span>
-            </div><span class="font-bold text-lg text-cyan-700">
+            </div>
+            <span class="font-bold text-lg text-cyan-700">
               {event.studyPoints || 0} ECTS
             </span>
           </div>
@@ -202,9 +204,6 @@
               style={`width: ${Math.min(100, (event.currentParticipants / event.maxParticipants) * 100) || 0}%`}
             ></div>
           </div>
-          <p class="text-sm text-stone-500 text-center">
-            {event.maxParticipants - event.currentParticipants} spots left!
-          </p>
         {/if}
         <div class="pt-4 border-t border-stone-100">
           <button
