@@ -1,4 +1,5 @@
 <script>
+    import { formatForDateInput, formatForTimeInput } from "$lib/helpers/dateTimeFormatter";
   import {
     X,
     Calendar,
@@ -14,7 +15,13 @@
 
   let { closeModal, formData, action = "create", eventId = null } = $props();
 
-  let localData = $state({ ...formData });
+  // Initialize state by formatting the prefilled dates/times correctly
+  let localData = $state({ 
+    ...formData,
+    date: formData.date ? formatForDateInput(formData.date) : "",
+    startAt: formData.startAt ? formatForTimeInput(formData.startAt) : "",
+    endAt: formData.endAt ? formatForTimeInput(formData.endAt) : ""
+  });
 
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") closeModal();
@@ -53,7 +60,7 @@
       class="sticky top-0 bg-white p-6 border-b border-gray-100 flex items-center justify-between z-10 shrink-0"
     >
       <h2 id="modal-title" class="text-3xl font-extrabold text-gray-800">
-        {action === 'update' ? 'Edit Event' : 'New Event Details'}{console.log(localData)}
+        {action === 'update' ? 'Edit Event' : 'New Event Details'}
       </h2>
       <button
         type="button"

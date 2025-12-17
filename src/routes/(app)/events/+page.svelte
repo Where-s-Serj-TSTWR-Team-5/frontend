@@ -6,7 +6,6 @@
 
   let { data } = $props();
 
-  // State
   let filter = $state("All");
   let searchQuery = $state("");
   let isModalOpen = $state(false);
