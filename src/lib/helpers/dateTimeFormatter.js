@@ -16,6 +16,24 @@ function isValidDate(dateInput) {
 }
 
 /**
+ * Formats a date for HTML <input type="date"> (YYYY-MM-DD).
+ */
+export function formatForDateInput(dateInput) {
+  if (!isValidDate(dateInput)) return "";
+  const d = new Date(dateInput);
+  return d.toISOString().split("T")[0];
+}
+
+/**
+ * Formats a time for HTML <input type="time"> (HH:MM).
+ */
+export function formatForTimeInput(dateInput) {
+  if (!isValidDate(dateInput)) return "";
+  const d = new Date(dateInput);
+  return d.toISOString().split("T")[1].substring(0, 5);
+}
+
+/**
  * Formats a date for a compact card display (e.g., "Dec 16").
  * @param {string | Date | number | null | undefined} dateInput The date-time value (date, startAt, etc.).
  * @param {string} fallback The string to return if the date is invalid or missing.
