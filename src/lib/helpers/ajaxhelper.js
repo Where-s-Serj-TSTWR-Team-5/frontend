@@ -2,11 +2,11 @@
      * This function fetches the data from the API
      * @param url
      */
-export const getData = async (url, fetchFn = fetch) => {
-    const response = await fetchFn(url);
+export const getData = async (url, options = {}, fetchFn = fetch) => { 
+    const response = await fetchFn(url, options);
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch ${url}`);
+        throw new Error(`Failed to fetch ${url}. Status: ${response.status}`);
     }
 
     return await response.json();
