@@ -1,8 +1,8 @@
 <script>
   import { Search, X, Calendar, Check, Plus } from "lucide-svelte";
   import Event from "$lib/components/+Event.svelte";
-  import CreateModal from "$lib/components/events/+CreateModal.svelte";
   import { enhance } from "$app/forms";
+    import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
 
   let { data } = $props();
 
@@ -158,7 +158,7 @@
           };
         }}
       >
-        <CreateModal {closeModal} {formData} />
+        <CreateUpdateModal {closeModal} {formData} action='Create' />
       </form>
     </div>
   {/if}
