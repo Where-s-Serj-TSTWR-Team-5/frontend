@@ -30,9 +30,9 @@
       >
     </div>
     <div
-      class="absolute top-3 right-3 bg-cyan-600 text-white rounded-full px-3 py-1 flex items-center gap-1 shadow-lg"
+      class="absolute top-3 right-3 bg-white/90 rounded-full px-3 py-1 flex items-center gap-1 shadow-lg"
     >
-      <Sparkles class="w-4 h-4" />
+      <Sparkles class="w-4 h-4 text-cyan-600" />
       <span class="text-xs font-bold">{event.studyPoints} EC's</span>
     </div>
   </div>
