@@ -6,6 +6,7 @@
   import MapPlantItem from "$lib/components/+MapPlantItem.svelte";
 
   let { data } = $props();
+  const events = data.events.data;
 
   // --- Mock Data ---
   const PLANTS = [
@@ -123,7 +124,7 @@
       </div>
 
       <div class="space-y-4">
-        {#each data.events.data.slice(0, 5) as event}
+        {#each events.slice(0, 5) as event}
           <Event {event} />
         {/each}
       </div>
