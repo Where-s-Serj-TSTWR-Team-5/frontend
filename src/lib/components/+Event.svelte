@@ -77,7 +77,7 @@
           e.preventDefault();
           openModal();
         }}
-        class="p-2 rounded-full bg-white/90 backdrop-blur-md text-yellow-600 hover:bg-white transition-all shadow-lg active:scale-90"
+        class="p-2 rounded-md bg-white/90 backdrop-blur-md text-yellow-600 hover:bg-white transition-all shadow-lg active:scale-90 cursor-pointer hover:ring-2 hover:ring-amber-500"
         title="Edit Event"
       >
         <Pen class="w-4 h-4" />
