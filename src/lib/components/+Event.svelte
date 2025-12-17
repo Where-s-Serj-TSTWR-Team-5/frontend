@@ -10,7 +10,7 @@
 
 <a
   href={`/events/${event.id}`}
-  class="group w-full text-left bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-md hover:shadow-2xl transition-all duration-300 active:scale-[0.98]"
+  class="group block w-full text-left bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-md hover:shadow-2xl transition-all duration-300 active:scale-[0.98] cursor-pointer"
 >
   <div class="relative h-44 overflow-hidden">
     <img
@@ -18,24 +18,19 @@
       alt={event.title}
       class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
     />
-    <div
-      class="absolute inset-0 bg-linear-to-t from-black/50 via-black/20 to-transparent"
-    ></div>
-    <div
-      class="absolute top-3 left-3 bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1 shadow"
-    >
+    <div class="absolute inset-0 bg-linear-to-t from-black/50 via-black/20 to-transparent"></div>
+    
+    <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1 shadow">
       <Leaf class="w-4 h-4 text-green-600" />
-      <span class="text-xs font-semibold text-stone-700"
-        >{event.category || "Eco Event"}</span
-      >
+      <span class="text-xs font-semibold text-stone-700">{event.category || "Eco Event"}</span>
     </div>
-    <div
-      class="absolute top-3 right-3 bg-white/90 rounded-full px-3 py-1 flex items-center gap-1 shadow-lg"
-    >
+    
+    <div class="absolute top-3 right-3 bg-white/90 rounded-full px-3 py-1 flex items-center gap-1 shadow-lg">
       <Sparkles class="w-4 h-4 text-cyan-600" />
       <span class="text-xs font-bold">{event.studyPoints} EC's</span>
     </div>
   </div>
+
   <div class="p-5 flex flex-col gap-4">
     <div>
       <h3 class="font-serif text-xl font-bold text-stone-900 leading-tight">
@@ -45,44 +40,36 @@
         {event.subtitle}
       </p>
     </div>
-    <div
-      class="flex items-center justify-between border-b border-stone-100 pb-3"
-    >
+
+    <div class="flex items-center justify-between border-b border-stone-100 pb-3">
       <div class="flex items-center gap-3">
-        <div
-          class="flex items-center gap-2 text-sm text-stone-700 font-medium shrink-0"
-        >
+        <div class="flex items-center gap-2 text-sm text-stone-700 font-medium shrink-0">
           <Calendar class="w-4 h-4 text-green-600" />
           <span class="font-semibold">{displayDate}</span>
         </div>
-        <div
-          class="flex items-center gap-2 text-sm text-stone-700 font-medium shrink-0"
-        >
+        <div class="flex items-center gap-2 text-sm text-stone-700 font-medium shrink-0">
           <Trophy class="w-4 h-4 text-yellow-600" />
-          <span class="font-bold text-yellow-700"
-            >{event.points || 0} Points</span
-          >
+          <span class="font-bold text-yellow-700">{event.points || 0} Points</span>
         </div>
       </div>
 
       {#if event.maxParticipants}
-        <div
-          class={`flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold shrink-0 ${
-            isFull ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-          }`}
-        >
+        <div class={`flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold shrink-0 ${isFull ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
           <Users class="w-3 h-3" />
           <span>{isFull ? "Full" : `${spotsLeft} Spots`}</span>
         </div>
       {/if}
     </div>
+
     <div class="pt-1">
-      <button
-        class="w-full flex items-center justify-center bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full text-base font-semibold shadow-lg transition disabled:bg-red-700 disabled:hover:bg-red-700 disabled:shadow-none"
-        disabled={isFull}
+      <div
+        class="relative z-10 w-full flex items-center justify-center px-5 py-2 rounded-full text-base font-semibold shadow-lg transition-all duration-200 cursor-pointer
+        {isFull 
+          ? 'bg-red-700 text-white opacity-80' 
+          : 'bg-green-600 text-white group-hover:bg-green-700 group-hover:-translate-y-0.5'}"
       >
         {isFull ? "Full" : "Register Now"}
-      </button>
+      </div>
     </div>
   </div>
 </a>

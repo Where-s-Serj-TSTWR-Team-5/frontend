@@ -40,13 +40,11 @@
   const closeModal = () => (isModalOpen = false);
 </script>
 
-<div class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen">
+<div class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen cursor-default">
   <header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
     <div class="flex justify-between items-start mb-4 h-12">
       <div class={isSearchOpen ? "hidden" : "block"}>
-        <div
-          class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1"
-        >
+        <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">
           Fruit Forest
         </div>
         <h1 class="font-serif text-4xl italic font-bold text-stone-900">
@@ -57,19 +55,22 @@
         {#if !isSearchOpen}
           <button
             onclick={openModal}
-            class="p-2 rounded-full bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md"
+            class="p-2 rounded-full bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md cursor-pointer"
             title="Create New Event"
           >
             <Plus class="w-5 h-5" />
           </button>
         {/if}
+        
         <div
           class={`flex items-center transition-all duration-300 ${isSearchOpen ? "w-full bg-stone-100 rounded-lg p-2" : "bg-stone-100 p-2 rounded-full w-10"}`}
         >
           <Search
-            class="w-5 h-5 text-stone-500 cursor-pointer"
+            class="w-5 h-5 text-stone-500 cursor-pointer focus:outline-none"
             onclick={() => (isSearchOpen = true)}
             tabindex={0}
+            role="button"
+            aria-label="Open search"
             onkeydown={(e) =>
               (e.key === "Enter" || e.key === " ") && (isSearchOpen = true)}
           />
@@ -79,16 +80,17 @@
                 type="text"
                 placeholder="Search events..."
                 bind:value={searchQuery}
-                class="bg-transparent border-none outline-none text-sm w-full text-stone-800"
+                class="bg-transparent border-none outline-none text-sm w-full text-stone-800 cursor-text"
                 onblur={() => !searchQuery && (isSearchOpen = false)}
               />
               <button
+                class="cursor-pointer p-1"
                 onclick={() => {
                   searchQuery = "";
                   isSearchOpen = false;
                 }}
               >
-                <X class="w-4 h-4 text-stone-400" />
+                <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
               </button>
             </div>
           {/if}
@@ -101,11 +103,12 @@
         Join activities that protect nature & earn rewards.
       </p>
     {/if}
+
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
       {#each filters as f}
         <button
           onclick={() => (filter = f)}
-          class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${
+          class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
             filter === f
               ? "bg-green-700 text-white border-green-700"
               : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
@@ -116,6 +119,7 @@
       {/each}
     </div>
   </header>
+
   <div class="px-6">
     {#if events.length === 0}
       <div class="text-center py-10 text-stone-400">
@@ -159,6 +163,7 @@
       <form
         method="POST"
         action="?/create"
+        class="w-full"
         use:enhance={() => {
           return async ({ result }) => {
             if (result.type === "success") {
