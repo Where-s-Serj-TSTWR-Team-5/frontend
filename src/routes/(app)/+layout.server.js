@@ -16,7 +16,7 @@ export const load = async ({ cookies }) => {
     });
 
     const events = await getData(`${PUBLIC_API_URL}/events/`, {
-      headers: { Authorization: `Bearer ${token}` } // if needed
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     return { user, events };
