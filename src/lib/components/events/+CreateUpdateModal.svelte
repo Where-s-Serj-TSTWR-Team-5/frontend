@@ -53,7 +53,7 @@
       class="sticky top-0 bg-white p-6 border-b border-gray-100 flex items-center justify-between z-10 shrink-0"
     >
       <h2 id="modal-title" class="text-3xl font-extrabold text-gray-800">
-        {action === 'update' ? 'Edit Event' : 'New Event Details'}
+        {action === 'update' ? 'Edit Event' : 'New Event Details'}{console.log(localData)}
       </h2>
       <button
         type="button"
@@ -110,36 +110,36 @@
               >Date *</label
             >
             <input
-              name="startDate"
+              name="date"
               id="date"
               type="date"
-              bind:value={localData.startDate}
+              bind:value={localData.date}
               required
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
           </div>
           <div class="flex flex-col">
-            <label for="startTime" class="font-semibold text-gray-700 mb-1"
+            <label for="startAt" class="font-semibold text-gray-700 mb-1"
               >Start Time *</label
             >
             <input
-              name="startTime"
-              id="startTime"
+              name="startAt"
+              id="startAt"
               type="time"
-              bind:value={localData.startTime}
+              bind:value={localData.startAt}
               required
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
           </div>
           <div class="flex flex-col">
-            <label for="endTime" class="font-semibold text-gray-700 mb-1"
+            <label for="endAt" class="font-semibold text-gray-700 mb-1"
               >End Time</label
             >
             <input
-              name="endTime"
-              id="endTime"
+              name="endAt"
+              id="endAt"
               type="time"
-              bind:value={localData.endTime}
+              bind:value={localData.endAt}
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
           </div>

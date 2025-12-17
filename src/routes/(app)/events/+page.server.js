@@ -44,12 +44,12 @@ export const actions = {
  * Helper to avoid repeating the date/payload logic
  */
 function mapFormDataToPayload(data) {
-    const startDate = data.get('startDate');
-    const startTime = data.get('startTime');
-    const endTime = data.get('endTime');
+    const date = data.get('date');
+    const startAtData = data.get('startAt');
+    const endAtData = data.get('endAt');
 
-    const startAt = startDate && startTime ? `${startDate}T${startTime}:00Z` : null;
-    const endAt = startDate && endTime ? `${startDate}T${endTime}:00Z` : null;
+    const startAt = date && startAtData ? `${date}T${startAtData}:00Z` : null;
+    const endAt = date && endAtData ? `${date}T${endAtData}:00Z` : null;
 
     return {
         title: data.get('title'),
@@ -57,6 +57,7 @@ function mapFormDataToPayload(data) {
         thumbnail: data.get('thumbnailUrl'),
         banner: data.get('bannerUrl'),
         location: data.get('location'),
+        date: data.get('date'),
         startAt: startAt,
         endAt: endAt,
         studyPoints: Number(data.get('studyPoints')),
