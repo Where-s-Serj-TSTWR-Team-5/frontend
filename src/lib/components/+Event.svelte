@@ -97,7 +97,7 @@
           e.preventDefault();
           openDeleteModal();
         }}
-        class="p-2 rounded-md bg-red-100/90 backdrop-blur-md text-red-600 hover:bg-red-200 transition-all shadow-lg active:scale-90 cursor-pointer hover:ring-2 hover:ring-red-500"
+        class="p-2 rounded-md bg-white/90 backdrop-blur-md text-red-600 hover:bg-red- transition-all shadow-lg active:scale-90 cursor-pointer hover:ring-2 hover:ring-red-500"
         title="Delete Event"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
