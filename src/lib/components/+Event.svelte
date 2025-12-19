@@ -11,6 +11,7 @@
   import { formatCardDate } from "$lib/helpers/dateTimeFormatter.js";
   import { enhance } from "$app/forms";
   import CreateUpdateModal from "./events/+CreateUpdateModal.svelte";
+  import DeleteModal from "./DeleteModal.svelte";
 
   let { event } = $props();
 
@@ -36,6 +37,13 @@
   let isModalOpen = $state(false);
   const openModal = () => (isModalOpen = true);
   const closeModal = () => (isModalOpen = false);
+
+   let isDeleteModalOpen = $state(false);
+  const openDeleteModal = () => (isDeleteModalOpen = true);
+  const closeDeleteModal = () => (isDeleteModalOpen = false);
+  function handleDeleted(event) {
+    location.reload();
+  }
 </script>
 
 <a
@@ -69,7 +77,7 @@
         <span class="text-xs font-bold">{event.studyPoints} EC's</span>
       </div>
     </div>
-    <div class="absolute bottom-3 right-3 flex flex-col gap-2 items-end">
+    <div class="absolute bottom-3 right-3 flex flex-row gap-2 items-end">
       <button
         type="button"
         onclick={(e) => {
@@ -81,6 +89,20 @@
         title="Edit Event"
       >
         <Pen class="w-4 h-4" />
+      </button>
+      <button
+        type="button"
+        onclick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          openDeleteModal();
+        }}
+        class="p-2 rounded-md bg-red-100/90 backdrop-blur-md text-red-600 hover:bg-red-200 transition-all shadow-lg active:scale-90 cursor-pointer hover:ring-2 hover:ring-red-500"
+        title="Delete Event"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 6h18M19 6l-1 14H6L5 6m5 0V4h4v2" />
+        </svg>
       </button>
     </div>
   </div>
@@ -163,4 +185,13 @@
       </form>
     </div>
   </div>
+{/if}
+<!-- Delete Modal -->
+{#if isDeleteModalOpen}
+  <DeleteModal
+    eventId={event.id}
+    eventTitle={event.title}
+    closeModal={closeDeleteModal}
+    on:deleted={handleDeleted}
+  />
 {/if}
