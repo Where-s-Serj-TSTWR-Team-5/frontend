@@ -1,4 +1,5 @@
 <script>
+    import { formatForDateInput, formatForTimeInput } from "$lib/helpers/dateTimeFormatter";
   import {
     X,
     Calendar,
@@ -12,7 +13,15 @@
     Sparkles,
   } from "lucide-svelte";
 
-  let { closeModal, formData } = $props();
+  let { closeModal, formData, action = "create", eventId = null } = $props();
+
+  // Initialize state by formatting the prefilled dates/times correctly
+  let localData = $state({ 
+    ...formData,
+    date: formData.date ? formatForDateInput(formData.date) : "",
+    startAt: formData.startAt ? formatForTimeInput(formData.startAt) : "",
+    endAt: formData.endAt ? formatForTimeInput(formData.endAt) : ""
+  });
 
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") closeModal();
@@ -25,7 +34,7 @@
 
 <div
   id="modal-backdrop"
-  class="fixed inset-0 bg-blue-100/50 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 z-50 cursor-default"
+  class="text-start fixed inset-0 bg-blue-100/50 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 z-50 cursor-default"
   role="presentation"
   onclick={handleBackdropClick}
   onkeydown={(e) => {
@@ -43,11 +52,15 @@
       e.stopPropagation();
     }}
   >
+    {#if eventId}
+      <input type="hidden" name="id" value={eventId} />
+    {/if}
+
     <header
       class="sticky top-0 bg-white p-6 border-b border-gray-100 flex items-center justify-between z-10 shrink-0"
     >
       <h2 id="modal-title" class="text-3xl font-extrabold text-gray-800">
-        New Event Details
+        {action === 'update' ? 'Edit Event' : 'New Event Details'}
       </h2>
       <button
         type="button"
@@ -70,7 +83,7 @@
               name="title"
               id="title"
               type="text"
-              bind:value={formData.title}
+              bind:value={localData.title}
               required
               placeholder="Community Garden Clean-up"
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
@@ -83,7 +96,7 @@
             <textarea
               name="description"
               id="description"
-              bind:value={formData.description}
+              bind:value={localData.description}
               rows="4"
               placeholder="Event details and what participants should bring."
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition resize-none"
@@ -104,36 +117,36 @@
               >Date *</label
             >
             <input
-              name="startDate"
+              name="date"
               id="date"
               type="date"
-              bind:value={formData.startDate}
+              bind:value={localData.date}
               required
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
           </div>
           <div class="flex flex-col">
-            <label for="startTime" class="font-semibold text-gray-700 mb-1"
+            <label for="startAt" class="font-semibold text-gray-700 mb-1"
               >Start Time *</label
             >
             <input
-              name="startTime"
-              id="startTime"
+              name="startAt"
+              id="startAt"
               type="time"
-              bind:value={formData.startTime}
+              bind:value={localData.startAt}
               required
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
           </div>
           <div class="flex flex-col">
-            <label for="endTime" class="font-semibold text-gray-700 mb-1"
+            <label for="endAt" class="font-semibold text-gray-700 mb-1"
               >End Time</label
             >
             <input
-              name="endTime"
-              id="endTime"
+              name="endAt"
+              id="endAt"
               type="time"
-              bind:value={formData.endTime}
+              bind:value={localData.endAt}
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
           </div>
@@ -149,7 +162,7 @@
             name="location"
             id="location"
             type="text"
-            bind:value={formData.location}
+            bind:value={localData.location}
             required
             placeholder="Fruit Forest, Central Park"
             class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
@@ -172,7 +185,7 @@
               name="thumbnailUrl"
               id="thumbnailUrl"
               type="url"
-              bind:value={formData.thumbnailUrl}
+              bind:value={localData.thumbnailUrl}
               placeholder="Link for event thumbnail"
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
@@ -185,7 +198,7 @@
               name="bannerUrl"
               id="bannerUrl"
               type="url"
-              bind:value={formData.bannerUrl}
+              bind:value={localData.bannerUrl}
               placeholder="Link for event banner"
               class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             />
@@ -210,7 +223,7 @@
               name="points"
               id="points"
               type="number"
-              bind:value={formData.points}
+              bind:value={localData.points}
               class="w-full bg-transparent border-none p-0 focus:ring-0 text-lg font-mono"
             />
           </div>
@@ -226,7 +239,7 @@
               id="studyPoints"
               type="number"
               step="0.5"
-              bind:value={formData.studyPoints}
+              bind:value={localData.studyPoints}
               class="w-full bg-transparent border-none p-0 focus:ring-0 text-lg font-mono"
             />
           </div>
@@ -241,7 +254,7 @@
               name="maxParticipants"
               id="maxParticipants"
               type="number"
-              bind:value={formData.maxParticipants}
+              bind:value={localData.maxParticipants}
               class="w-full bg-transparent border-none p-0 focus:ring-0 text-lg font-mono"
             />
           </div>
@@ -252,9 +265,9 @@
     <div class="p-6 border-t border-gray-100 bg-white z-10 shrink-0">
       <button
         type="submit"
-        class="w-full py-4 rounded-xl text-white font-extrabold text-xl bg-green-600 hover:bg-green-700 shadow-xl cursor-pointer"
+        class="w-full py-4 rounded-xl text-white font-extrabold text-xl bg-green-600 hover:bg-green-700 shadow-xl cursor-pointer transition-all active:scale-[0.98]"
       >
-        Create Event
+        {action === 'update' ? 'Save Changes' : 'Create Event'}
       </button>
     </div>
   </div>
