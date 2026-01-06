@@ -2,12 +2,12 @@ import { getData } from "$lib/helpers/ajaxhelper.js";
 import { PUBLIC_API_URL } from "$env/static/public";
 import { error, redirect } from "@sveltejs/kit";
 
-export const load = async ({ cookies }) => {
+export const load = async ({ cookies, params, fetch }) => {
   const token = cookies.get('token');
   console.log('Layout load function called. Token:', token);
 
   if (!token) {
-    throw redirect(302, '/login'); // redirect if not logged in
+    throw redirect(302, '/login');
   }
 
   try {
@@ -16,7 +16,7 @@ export const load = async ({ cookies }) => {
     });
 
     const events = await getData(`${PUBLIC_API_URL}/events/`, {
-      headers: { Authorization: `Bearer ${token}` } // if needed
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     return { user, events };
