@@ -28,6 +28,9 @@
   function isActive(href: string) {
     return $page.url.pathname === href;
   }
+
+  const currentUser = $page.data?.user;
+  console.log('Layout user data:', currentUser);
 </script>
 
   <!-- Desktop navigation -->
@@ -52,9 +55,16 @@
         {/each}
       </div>
 
-      <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm border-2 border-green-700 cursor-pointer">
+    {#if currentUser}
+      <a
+        href={`/users/${currentUser.id}`}
+        class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-sm border-2 border-green-700 hover:bg-green-500 transition"
+        title={currentUser.userName}
+      >
         Y
-      </div>
+      </a>
+    {/if}
+
     </div>
   </nav>
 

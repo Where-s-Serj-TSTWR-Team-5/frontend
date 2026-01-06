@@ -11,12 +11,12 @@ export const load = async ({ cookies }) => {
   }
 
   try {
-    const user = await getData(`${PUBLIC_API_URL}/users`, {
+    const user = await getData(`${PUBLIC_API_URL}/users/me`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
     const events = await getData(`${PUBLIC_API_URL}/events/`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` } // if needed
     });
 
     return { user, events };
