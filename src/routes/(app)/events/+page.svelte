@@ -1,8 +1,9 @@
 <script>
   import { Search, X, Calendar, Check, Plus } from "lucide-svelte";
   import Event from "$lib/components/+Event.svelte";
+  import { page } from "$app/stores";
   import { enhance } from "$app/forms";
-    import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
+  import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
 
   let { data } = $props();
 
@@ -24,11 +25,16 @@
     maxParticipants: 0,
   });
 
-  const filters = ["All", "Gardening", "Sustainability", "Workshops", "Clean-up"];
+  const filters = [
+    "All",
+    "Gardening",
+    "Sustainability",
+    "Workshops",
+    "Clean-up",
+  ];
 
   const events = data.events.data;
-  const user = data.user.data;
-  console.log(user);
+  const user = $page.data?.user;
 
   // Reactive Logic
   let filteredEvents = $derived(
@@ -50,17 +56,24 @@
   const closeModal = () => (isModalOpen = false);
 </script>
 
-<div class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen cursor-default">
+<div
+  class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen cursor-default"
+>
   <header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
     <div class="flex justify-between items-start mb-4 h-12">
       <div>
-        <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">
+        <div
+          class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1"
+        >
           Fruit Forest
         </div>
-        <h1 class="font-serif text-4xl italic font-bold text-stone-900">Events</h1>
+        <h1 class="font-serif text-4xl italic font-bold text-stone-900">
+          Events
+        </h1>
       </div>
 
       <div class="flex items-center space-x-2">
+        {#if user.role === 'GREEN_OFFICE_MEMBER'}
         <button
           onclick={openModal}
           class="p-2 rounded-md bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md cursor-pointer"
@@ -68,7 +81,7 @@
         >
           <Plus class="w-5 h-5" />
         </button>
-
+        {/if}
         <div class="flex items-center bg-stone-100 rounded-lg p-2 w-48 sm:w-64">
           <Search class="w-4 h-4 text-stone-400 ml-1" />
           <input
@@ -130,7 +143,9 @@
       </h2>
       <div class="space-y-4">
         {#each registeredEvents as event (event.id)}
-          <div class="flex items-center p-3 bg-green-50 rounded-xl shadow-sm border border-green-100">
+          <div
+            class="flex items-center p-3 bg-green-50 rounded-xl shadow-sm border border-green-100"
+          >
             <div class="text-xl mr-3">{event.image?.substring(0, 1)}</div>
             <div class="flex-1">
               <p class="text-sm font-bold text-green-800">{event.title}</p>
@@ -146,7 +161,9 @@
   {/if}
 
   {#if isModalOpen}
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+    >
       <form
         method="POST"
         action="?/create"
@@ -159,7 +176,7 @@
           };
         }}
       >
-        <CreateUpdateModal {closeModal} {formData} action='Create' />
+        <CreateUpdateModal {closeModal} {formData} action="Create" />
       </form>
     </div>
   {/if}
