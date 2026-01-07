@@ -27,6 +27,8 @@
   const filters = ["All", "Gardening", "Sustainability", "Workshops", "Clean-up"];
 
   const events = data.events.data;
+  const user = data.user.data;
+  console.log(user);
 
   // Reactive Logic
   let filteredEvents = $derived(
