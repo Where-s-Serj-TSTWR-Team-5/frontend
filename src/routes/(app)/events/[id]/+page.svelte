@@ -16,20 +16,21 @@
     formatTime,
   } from "$lib/helpers/dateTimeFormatter.js";
   import { page } from "$app/stores";
-  import { PUBLIC_API_URL } from "$env/static/public";
-  import { writable } from "svelte/store";
+  import { events, setEvents, toggleRegistration } from "$lib/stores/events.js";
+  import { get, writable } from "svelte/store";
 
   let { data } = $props();
   let event = data.event.event;
   const user = $page.data?.user;
+  setEvents($page.data.events.data);
 
   const displayDate = formatFullDate(event.date || event.startAt, "Date TBD");
   const displayStartTime = formatTime(event.startAt, "Time TBD");
   const displayEndTime = formatTime(event.endAt, "Time TBD");
 
-  // Reactive state
+  // Reactive state from shared store
+  const currentParticipants = writable(event.currentParticipants);
   const isRegistered = writable(user?.eventRegistrations?.some(r => r.eventId === event.id) ?? false);
-  const currentParticipants = writable(event.currentParticipants || 0);
 
   const getParticipantStatus = () => {
     if ($currentParticipants >= event.maxParticipants) {
@@ -52,29 +53,21 @@
   let participantStatus = getParticipantStatus();
   let isFull = $currentParticipants >= event.maxParticipants;
 
-  const toggleRegistration = async () => {
+  const handleToggleRegistration = async () => {
     if (!user || isFull) return;
 
-    try {
-      const res = await fetch(`${PUBLIC_API_URL}/events/toggleRegistration`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${$page.data?.token}`,
-        },
-        body: JSON.stringify({ eventId: event.id }),
-      });
+    const token = $page.data?.token;
+    await toggleRegistration(event.id, token);
 
-      if (!res.ok) throw new Error("Failed to toggle registration");
+    console.log(get(events));
 
-      const result = await res.json();
-
-      // Update reactive stores
-      isRegistered.set(result.registered);
-      currentParticipants.update(n => n + (result.registered ? 1 : -1));
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again.");
+    // update local reactive values from the store
+    const updatedEvent = get(events).find(e => e.id === event.id);
+    if (updatedEvent) {
+      currentParticipants.set(updatedEvent.currentParticipants);
+      isRegistered.set(updatedEvent.isRegistered);
+      participantStatus = getParticipantStatus();
+      isFull = updatedEvent.currentParticipants >= event.maxParticipants;
     }
   };
 </script>
@@ -190,7 +183,7 @@
 
         <div class="pt-4 border-t border-stone-100">
           <button
-            on:click={toggleRegistration}
+            on:click={handleToggleRegistration}
             class="w-full py-3 rounded-xl text-white font-extrabold text-lg shadow-xl transition flex items-center justify-center
             {isFull && !$isRegistered
               ? 'bg-red-700 cursor-not-allowed shadow-none'
