@@ -15,21 +15,29 @@
     formatFullDate,
     formatTime,
   } from "$lib/helpers/dateTimeFormatter.js";
+  import { page } from "$app/stores";
+  import { PUBLIC_API_URL } from "$env/static/public";
+  import { writable } from "svelte/store";
 
   let { data } = $props();
   let event = data.event.event;
+  const user = $page.data?.user;
 
   const displayDate = formatFullDate(event.date || event.startAt, "Date TBD");
   const displayStartTime = formatTime(event.startAt, "Time TBD");
   const displayEndTime = formatTime(event.endAt, "Time TBD");
 
+  // Reactive state
+  const isRegistered = writable(user?.eventRegistrations?.some(r => r.eventId === event.id) ?? false);
+  const currentParticipants = writable(event.currentParticipants || 0);
+
   const getParticipantStatus = () => {
-    if (event.currentParticipants >= event.maxParticipants) {
+    if ($currentParticipants >= event.maxParticipants) {
       return {
         text: "Fully Booked",
         color: "text-red-700 bg-red-100 border-red-200",
       };
-    } else if (event.currentParticipants / event.maxParticipants > 0.75) {
+    } else if ($currentParticipants / event.maxParticipants > 0.75) {
       return {
         text: "Almost Full",
         color: "text-amber-700 bg-amber-100 border-amber-200",
@@ -41,13 +49,37 @@
     };
   };
 
-  const participantStatus = getParticipantStatus();
-  const isFull = event.currentParticipants >= event.maxParticipants;
+  let participantStatus = getParticipantStatus();
+  let isFull = $currentParticipants >= event.maxParticipants;
+
+  const toggleRegistration = async () => {
+    if (!user || isFull) return;
+
+    try {
+      const res = await fetch(`${PUBLIC_API_URL}/events/toggleRegistration`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${$page.data?.token}`,
+        },
+        body: JSON.stringify({ eventId: event.id }),
+      });
+
+      if (!res.ok) throw new Error("Failed to toggle registration");
+
+      const result = await res.json();
+
+      // Update reactive stores
+      isRegistered.set(result.registered);
+      currentParticipants.update(n => n + (result.registered ? 1 : -1));
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 </script>
 
-<div
-  class="flex flex-col h-full bg-stone-50 overflow-y-auto animate-in slide-in-from-right duration-300 pb-8 cursor-default"
->
+<div class="flex flex-col h-full bg-stone-50 overflow-y-auto animate-in slide-in-from-right duration-300 pb-8 cursor-default">
   <div class="relative h-72 md:h-96 w-full shrink-0">
     <img
       alt={event.title}
@@ -55,31 +87,19 @@
       class="w-full h-full object-cover"
     />
     <button
-      onclick={() => {
-        window.history.back();
-      }}
+      on:click={() => window.history.back()}
       class="absolute top-8 left-6 z-20 bg-black/50 text-white p-3 rounded-full shadow-xl hover:bg-black/70 transition duration-300 ease-in-out cursor-pointer"
       aria-label="Go back"
     >
       <ChevronLeft class="w-6 h-6" />
     </button>
-    <div
-      class="absolute inset-0 bg-linear-to-t from-stone-50 via-stone-50/50 to-transparent"
-    ></div>
+    <div class="absolute inset-0 bg-linear-to-t from-stone-50 via-stone-50/50 to-transparent"></div>
     <div class="absolute bottom-0 left-0 right-0 p-6 pt-10">
-      <span
-        class="text-sm font-bold tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md"
-      >
+      <span class="text-sm font-bold tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md">
         {event.category || "Eco Event"}
       </span>
-      <h1
-        class="text-4xl lg:text-5xl font-extrabold text-stone-900 mt-2 leading-tight drop-shadow-lg"
-      >
-        {event.title}
-      </h1>
-      <p class="text-lg text-stone-700 font-medium italic mt-1">
-        {event.subtitle}
-      </p>
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-stone-900 mt-2 leading-tight drop-shadow-lg">{event.title}</h1>
+      <p class="text-lg text-stone-700 font-medium italic mt-1">{event.subtitle}</p>
     </div>
   </div>
 
@@ -110,10 +130,7 @@
             <Clock class="w-5 h-5 text-green-600 shrink-0" />
             <div>
               <span class="text-xs font-semibold uppercase text-stone-500">Time</span>
-              <p class="font-medium text-stone-800">
-                {displayStartTime}
-                {#if event.endAt} - {displayEndTime} {/if}
-              </p>
+              <p class="font-medium text-stone-800">{displayStartTime}{#if event.endAt} - {displayEndTime}{/if}</p>
             </div>
           </div>
           <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl col-span-full">
@@ -157,9 +174,7 @@
         <div class={`p-4 rounded-xl border-2 ${participantStatus.color}`}>
           <p class="text-sm font-semibold uppercase">{participantStatus.text}</p>
           <div class="flex justify-between items-baseline mt-1">
-            <span class="text-3xl font-extrabold text-stone-900 leading-none">
-              {event.currentParticipants || 0}
-            </span>
+            <span class="text-3xl font-extrabold text-stone-900 leading-none">{$currentParticipants}</span>
             <span class="text-lg text-stone-600 font-medium">/ {event.maxParticipants || "∞"}</span>
           </div>
         </div>
@@ -168,18 +183,29 @@
           <div class="w-full bg-stone-200 rounded-full h-2.5">
             <div
               class="h-2.5 rounded-full bg-green-600 transition-all duration-500"
-              style={`width: ${Math.min(100, (event.currentParticipants / event.maxParticipants) * 100) || 0}%`}
+              style={`width: ${Math.min(100, ($currentParticipants / event.maxParticipants) * 100) || 0}%`}
             ></div>
           </div>
         {/if}
 
         <div class="pt-4 border-t border-stone-100">
           <button
-            class="w-full py-3 rounded-xl text-white font-extrabold text-lg bg-green-600 hover:bg-green-700 shadow-xl shadow-green-300/60 transition flex items-center justify-center 
-            {isFull ? 'bg-red-700 hover:bg-red-700 shadow-none cursor-not-allowed' : 'cursor-pointer'}"
-            disabled={isFull}
+            on:click={toggleRegistration}
+            class="w-full py-3 rounded-xl text-white font-extrabold text-lg shadow-xl transition flex items-center justify-center
+            {isFull && !$isRegistered
+              ? 'bg-red-700 cursor-not-allowed shadow-none'
+              : $isRegistered
+                ? 'bg-stone-700 hover:bg-stone-800'
+                : 'bg-green-600 hover:bg-green-700 shadow-green-300/60'}"
+            disabled={isFull && !$isRegistered}
           >
-            {isFull ? "Full" : "Register Now"}
+            {#if $isRegistered}
+              Deregister
+            {:else if isFull}
+              Full
+            {:else}
+              Register Now
+            {/if}
           </button>
         </div>
       </div>
