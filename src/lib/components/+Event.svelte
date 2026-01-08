@@ -41,7 +41,7 @@
   const openModal = () => (isModalOpen = true);
   const closeModal = () => (isModalOpen = false);
 
-   let isDeleteModalOpen = $state(false);
+  let isDeleteModalOpen = $state(false);
   const openDeleteModal = () => (isDeleteModalOpen = true);
   const closeDeleteModal = () => (isDeleteModalOpen = false);
   function handleDeleted(event) {
@@ -173,9 +173,9 @@
       <form
         method="POST"
         action="?/update"
-        use:enhance={() => {
+        use:enhance={({ cancel }) => {
           return async ({ result }) => {
-            if (result.type === "success") {
+            if (result?.type === "success") {
               location.reload();
             }
           };
