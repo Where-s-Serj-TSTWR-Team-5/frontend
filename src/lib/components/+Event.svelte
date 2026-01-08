@@ -12,11 +12,8 @@
   import { enhance } from "$app/forms";
   import CreateUpdateModal from "./events/+CreateUpdateModal.svelte";
   import DeleteModal from "./DeleteModal.svelte";
-  import { page } from "$app/stores";
 
   let { event } = $props();
-
-  const user = $page.data?.user;
 
   const displayDate = formatCardDate(event.date || event.startAt);
   const spotsLeft = event.maxParticipants | 0;
@@ -80,7 +77,6 @@
         <span class="text-xs font-bold">{event.studyPoints} EC's</span>
       </div>
     </div>
-    {#if user.role === 'GREEN_OFFICE_MEMBER'}
     <div class="absolute bottom-3 right-3 flex flex-row gap-2 items-end">
       <button
         type="button"
@@ -109,7 +105,6 @@
         </svg>
       </button>
     </div>
-    {/if}
   </div>
 
   <div class="p-5 flex flex-col gap-4">
@@ -172,10 +167,10 @@
     <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()}>
       <form
         method="POST"
-        action="?/update"
-        use:enhance={({ cancel }) => {
+        action="events?/update"
+        use:enhance={() => {
           return async ({ result }) => {
-            if (result?.type === "success") {
+            if (result.type === "success") {
               location.reload();
             }
           };
