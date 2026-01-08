@@ -2,39 +2,47 @@ import { PUBLIC_API_URL } from "$env/static/public";
 import { fail } from "@sveltejs/kit";
 
 export const actions = {
-    create: async ({ request, fetch }) => {
+    create: async ({ request, fetch, cookies }) => {
+        const token = cookies.get('token');
+        if (!token) return fail(401, { error: 'Not authenticated' });
+
         const data = await request.formData();
         const eventData = mapFormDataToPayload(data);
 
         const response = await fetch(`${PUBLIC_API_URL}/events/`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
             body: JSON.stringify(eventData),
         });
 
         if (response.ok) return { success: true };
-        return fail(response.status, { error: 'Failed to create event' });
+        const errorData = await response.json().catch(() => ({}));
+        return fail(response.status, { error: errorData.message || 'Failed to create event' });
     },
 
-    // NEW UPDATE ACTION
-    update: async ({ request, fetch }) => {
-        const data = await request.formData();
-        const id = data.get('id'); // Ensure your form has <input type="hidden" name="id" value={event.id} />
+    update: async ({ request, fetch, cookies }) => {
+        const token = cookies.get('token');
+        if (!token) return fail(401, { error: 'Not authenticated' });
 
+        const data = await request.formData();
+        const id = data.get('id');
         if (!id) return fail(400, { error: 'Missing event ID' });
 
         const eventData = mapFormDataToPayload(data);
 
         const response = await fetch(`${PUBLIC_API_URL}/events/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
             body: JSON.stringify(eventData),
         });
 
-        if (response.ok) {
-            return { success: true };
-        }
-
+        if (response.ok) return { success: true };
         const errorData = await response.json().catch(() => ({}));
         return fail(response.status, { error: errorData.message || 'Update failed' });
     },

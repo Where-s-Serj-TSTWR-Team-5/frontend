@@ -26,6 +26,8 @@
   function isActive(href: string) {
     return $page.url.pathname === href;
   }
+
+  const currentUser = $page.data?.user;
 </script>
 
 <nav class="sticky top-0 z-50 bg-white shadow-md border-b border-stone-100 hidden md:block">
@@ -51,11 +53,18 @@
       {/each}
     </div>
 
-    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm border-2 border-green-700 cursor-pointer">
-      Y
+    {#if currentUser}
+      <a
+        href={`/users/${currentUser.id}`}
+        class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-sm border-2 border-green-700 hover:bg-green-500 transition"
+        title={currentUser.userName}
+      >
+        Y
+      </a>
+    {/if}
+
     </div>
-  </div>
-</nav>
+  </nav>
 
 <div class="max-w-7xl mx-auto w-full">
   {@render children?.()}
