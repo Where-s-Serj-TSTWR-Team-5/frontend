@@ -28,7 +28,6 @@
   }
 
   const currentUser = $page.data?.user;
-  console.log('Layout user data:', currentUser);
 </script>
 
 <nav class="sticky top-0 z-50 bg-white shadow-md border-b border-stone-100 hidden md:block">

@@ -1,24 +1,34 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import { Trash2 } from "lucide-svelte";
+  import { page } from "$app/stores";
 
-  export let eventId;       // ID of the event to delete
-  export let eventTitle;    // Title to display in confirmation
-  export let closeModal;    // Function to close modal
+  export let eventId; // ID of the event to delete
+  export let eventTitle; // Title to display in confirmation
+  export let closeModal; // Function to close modal
 
   const dispatch = createEventDispatcher();
-
+  const token = $page.data?.token;
   async function deleteEvent() {
+    if (!token) {
+      alert("You must be logged in to delete events");
+      return;
+    }
+
     try {
       const res = await fetch(`http://localhost:3011/events/${eventId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (res.ok) {
         closeModal();
         dispatch("deleted", { id: eventId });
       } else {
-        alert("Failed to delete event. Status: " + res.status);
+        const errorData = await res.json().catch(() => ({}));
+        alert("Failed to delete event: " + (errorData.message || res.status));
       }
     } catch (err) {
       console.error(err);

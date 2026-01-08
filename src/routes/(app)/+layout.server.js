@@ -4,7 +4,6 @@ import { error, redirect } from "@sveltejs/kit";
 
 export const load = async ({ cookies, params, fetch }) => {
   const token = cookies.get('token');
-  console.log('Layout load function called. Token:', token);
 
   if (!token) {
     throw redirect(302, '/login');
@@ -19,7 +18,7 @@ export const load = async ({ cookies, params, fetch }) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    return { user, events };
+    return { user, events, token };
   } catch (err) {
     throw error(500, 'Failed to load dashboard data');
   }
