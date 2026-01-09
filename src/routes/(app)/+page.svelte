@@ -4,6 +4,7 @@
   import Event from "$lib/components/+Event.svelte";
   import Plant from "$lib/components/+Plant.svelte";
   import MapPlantItem from "$lib/components/+MapPlantItem.svelte";
+    import { goto } from "$app/navigation";
 
   let { data } = $props();
   const events = data.events.data;
@@ -124,13 +125,14 @@
       </div>
 
       <div class="space-y-4">
-        {#each events.slice(0, 5) as event}
+        {#each events.slice(0, 3) as event}
           <Event {event} />
         {/each}
       </div>
 
       <button
         class="hidden lg:block w-full py-2 text-center text-sm font-bold text-stone-500 hover:text-green-700 transition"
+        onclick={() => goto('/events')}
       >
         View all events →
       </button>
