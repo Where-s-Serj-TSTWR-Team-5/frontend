@@ -225,12 +225,14 @@
           <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
             <Users class="w-6 h-6 text-green-600" /> Capacity
           </h2>
+          {#if user.role === "GREEN_OFFICE_MEMBER"}
           <button
             onclick={() => (showParticipants = true)}
             class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
           >
             <Eye class="w-3 h-3" /> View List
           </button>
+          {/if}
         </div>
 
         <div class={`p-4 rounded-xl border-2 ${participantStatus.color}`}>
