@@ -12,6 +12,7 @@
     Mail,
     Eye,
     X,
+    CalendarPlus,
   } from "lucide-svelte";
 
   import {
@@ -41,6 +42,28 @@
   // State for showing the participant modal
   let showParticipants = $state(false);
 
+  // --- CALENDAR EXPORT LOGIC ---
+  const formatCalDate = (date) => {
+    if (!date) return "";
+    return new Date(date).toISOString().replace(/-|:|\.\d+/g, "");
+  };
+
+  const getCalendarLinks = () => {
+    const title = encodeURIComponent(event.title);
+    const details = encodeURIComponent(event.description || "");
+    const location = encodeURIComponent(event.location || "");
+    const start = formatCalDate(event.startAt);
+    const end = formatCalDate(event.endAt || new Date(new Date(event.startAt).getTime() + 3600000));
+
+    return {
+      google: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`,
+      outlook: `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${event.startAt}&enddt=${event.endAt || event.startAt}&body=${details}&location=${location}`,
+      ics: `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${start}%0ADTEND:${end}%0ASUMMARY:${title}%0ADESCRIPTION:${details}%0ALOCATION:${location}%0AEND:VEVENT%0AEND:VCALENDAR`
+    };
+  };
+
+  const calLinks = getCalendarLinks();
+
   const getParticipantStatus = () => {
     if (currentParticipants >= event.maxParticipants) {
       return {
@@ -63,11 +86,9 @@
   let isFull = currentParticipants >= event.maxParticipants;
 
   const handleToggleRegistration = async () => {
-    // Prevent action if not logged in, if full, or if the user is the organizer
     if (!user || isFull || isOrganizer) return;
     const token = $page.data?.token;
     await toggleRegistration(event.id, token);
-
     window.location.reload();
   };
 </script>
@@ -271,7 +292,7 @@
           </div>
         {/if}
 
-        <div class="pt-4 border-t border-stone-100">
+        <div class="pt-4 border-t border-stone-100 space-y-6">
           {#if !isOrganizer}
             <button
               onclick={handleToggleRegistration}
@@ -291,6 +312,38 @@
                 Register Now
               {/if}
             </button>
+          {/if}
+
+          {#if isRegistered}
+            <div class="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-500">
+              <div class="flex items-center gap-2 text-stone-500">
+                <CalendarPlus class="w-4 h-4" />
+                <span class="text-xs font-bold uppercase tracking-wider">Add to Calendar</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <a
+                  href={calLinks.google}
+                  target="_blank"
+                  class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-stone-50 border border-stone-200 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-all text-[10px] font-bold text-stone-400"
+                >
+                  GOOGLE
+                </a>
+                <a
+                  href={calLinks.outlook}
+                  target="_blank"
+                  class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-stone-50 border border-stone-200 hover:bg-sky-50 hover:border-sky-200 hover:text-sky-700 transition-all text-[10px] font-bold text-stone-400"
+                >
+                  OUTLOOK
+                </a>
+                <a
+                  href={calLinks.ics}
+                  download={`${event.title}.ics`}
+                  class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-stone-50 border border-stone-200 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-700 transition-all text-[10px] font-bold text-stone-400"
+                >
+                  ICAL
+                </a>
+              </div>
+            </div>
           {/if}
         </div>
       </div>
