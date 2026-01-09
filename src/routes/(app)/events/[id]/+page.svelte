@@ -314,7 +314,7 @@
             </button>
           {/if}
 
-          {#if isRegistered}
+          {#if isRegistered || isOrganizer}
             <div class="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-500">
               <div class="flex items-center gap-2 text-stone-500">
                 <CalendarPlus class="w-4 h-4" />
