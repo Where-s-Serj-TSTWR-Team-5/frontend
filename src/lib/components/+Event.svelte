@@ -5,9 +5,8 @@
     Calendar,
     Sparkles,
     Users,
-    Edit,
-    Pen,
-    ShieldCheck
+    ShieldCheck,
+    Pen
   } from "lucide-svelte";
   import { formatCardDate } from "$lib/helpers/dateTimeFormatter.js";
   import { enhance } from "$app/forms";
@@ -15,6 +14,7 @@
   import DeleteModal from "./DeleteModal.svelte";
   import { page } from "$app/stores";
   import { toggleRegistration } from "$lib/helpers/events/toggleEvents";
+  import { writable } from 'svelte/store';
 
   let { event } = $props();
   const user = $page.data?.user;
@@ -24,22 +24,22 @@
   // Identity logic
   const isOrganizer = user?.id === event.organizerId;
 
-  // Non-reactive state
+  // Event state
   const spotsLeft = event.maxParticipants || 0;
   const isFull = event.maxParticipants && spotsLeft === 0;
   const isRegistered = user?.eventRegistrations?.some(r => r.eventId === event.id) ?? false;
 
-  // Modal state
-  let isModalOpen = false;
-  const openModal = () => (isModalOpen = true);
-  const closeModal = () => (isModalOpen = false);
+  // Modal state as stores inside this component
+  const isModalOpen = writable(false);
+  const isDeleteModalOpen = writable(false);
 
-  let isDeleteModalOpen = false;
-  const openDeleteModal = () => (isDeleteModalOpen = true);
-  const closeDeleteModal = () => (isDeleteModalOpen = false);
-  function handleDeleted() {
-    location.reload();
-  }
+  const openModal = () => isModalOpen.set(true);
+  const closeModal = () => isModalOpen.set(false);
+
+  const openDeleteModal = () => isDeleteModalOpen.set(true);
+  const closeDeleteModal = () => isDeleteModalOpen.set(false);
+
+  const handleDeleted = () => location.reload();
 
   // Form data for editing
   let formData = {
@@ -68,6 +68,7 @@
   };
 </script>
 
+<!-- Event Card -->
 <a
   href={`/events/${event.id}`}
   class="group block w-full text-left bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-md hover:shadow-2xl transition-all duration-300 active:scale-[0.98] cursor-pointer"
@@ -166,17 +167,15 @@
   </div>
 </a>
 
-{#if isModalOpen}
+{#if $isModalOpen}
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onclick={closeModal}>
-    <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()} role="presentation">
+    <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()}>
       <form
         method="POST"
         action="?/update"
         use:enhance={() => {
           return async ({ result }) => {
-            if (result.type === "success") {
-              location.reload();
-            }
+            if (result.type === "success") location.reload();
           };
         }}
       >
@@ -186,7 +185,7 @@
   </div>
 {/if}
 
-{#if isDeleteModalOpen}
+{#if $isDeleteModalOpen}
   <DeleteModal
     eventId={event.id}
     eventTitle={event.title}
