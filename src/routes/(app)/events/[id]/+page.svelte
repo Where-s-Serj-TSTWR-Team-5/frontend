@@ -13,6 +13,7 @@
     Eye,
     X,
     CalendarPlus,
+    Download,
   } from "lucide-svelte";
 
   import {
@@ -41,8 +42,40 @@
 
   // State for showing the participant modal
   let showParticipants = $state(false);
+  const exportToCSV = () => {
+    if (!event.registrations || event.registrations.length === 0) return;
 
-  // --- CALENDAR EXPORT LOGIC ---
+    // 1. Define Headers
+    const headers = ["Username", "Email", "Registration Date"];
+
+    // 2. Map data to rows - wrap in quotes to handle commas in names
+    const rows = event.registrations.map((registration) => [
+      registration.user?.userName || "Anonymous",
+      registration.user?.email || "N/A",
+      formatFullDate(registration.registeredAt, "Date TBD") || "N/A",
+    ]);
+
+    // 3. Combine into CSV format
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((value) => `"${value}"`).join(",")),
+    ].join("\n");
+
+    // 4. Create download link
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `Attendees_${event.title.replace(/\s+/g, "_")}.csv`,
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const formatCalDate = (date) => {
     if (!date) return "";
     return new Date(date).toISOString().replace(/-|:|\.\d+/g, "");
@@ -53,12 +86,14 @@
     const details = encodeURIComponent(event.description || "");
     const location = encodeURIComponent(event.location || "");
     const start = formatCalDate(event.startAt);
-    const end = formatCalDate(event.endAt || new Date(new Date(event.startAt).getTime() + 3600000));
+    const end = formatCalDate(
+      event.endAt || new Date(new Date(event.startAt).getTime() + 3600000),
+    );
 
     return {
       google: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`,
       outlook: `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${event.startAt}&enddt=${event.endAt || event.startAt}&body=${details}&location=${location}`,
-      ics: `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${start}%0ADTEND:${end}%0ASUMMARY:${title}%0ADESCRIPTION:${details}%0ALOCATION:${location}%0AEND:VEVENT%0AEND:VCALENDAR`
+      ics: `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${start}%0ADTEND:${end}%0ASUMMARY:${title}%0ADESCRIPTION:${details}%0ALOCATION:${location}%0AEND:VEVENT%0AEND:VCALENDAR`,
     };
   };
 
@@ -315,10 +350,14 @@
           {/if}
 
           {#if isRegistered || isOrganizer}
-            <div class="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-500">
+            <div
+              class="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-500"
+            >
               <div class="flex items-center gap-2 text-stone-500">
                 <CalendarPlus class="w-4 h-4" />
-                <span class="text-xs font-bold uppercase tracking-wider">Add to Calendar</span>
+                <span class="text-xs font-bold uppercase tracking-wider"
+                  >Add to Calendar</span
+                >
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <a
@@ -365,9 +404,11 @@
       <header
         class="p-6 border-b border-stone-100 flex items-center justify-between"
       >
-        <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
-          <Users class="w-5 h-5 text-green-600" /> Attendees
-        </h3>
+        <div class="flex flex-col">
+          <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
+            <Users class="w-5 h-5 text-green-600" /> Attendees
+          </h3>
+        </div>
         <button
           onclick={() => (showParticipants = false)}
           class="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400 hover:text-stone-600"
@@ -384,6 +425,16 @@
                 class="px-6 py-3 font-semibold text-stone-600 uppercase tracking-wider"
                 >User Details</th
               >
+              <th>
+                {#if event.registrations && event.registrations.length > 0}
+                  <button
+                    onclick={exportToCSV}
+                    class="mt-1 text-[10px] font-bold text-green-600 hover:text-green-700 flex items-center gap-1 uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    <Download class="w-3 h-3" /> Export to Spreadsheet
+                  </button>
+                {/if}
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-stone-100">
