@@ -11,7 +11,6 @@
     Star,
     Mail,
     Eye,
-    EyeOff,
     X,
   } from "lucide-svelte";
 
@@ -26,6 +25,9 @@
   let event = data.event.event;
 
   const user = $page.data?.user;
+
+  // Check if current user is the organizer
+  const isOrganizer = user?.id === event.organizerId;
 
   const displayDate = formatFullDate(event.date || event.startAt, "Date TBD");
   const displayStartTime = formatTime(event.startAt, "Time TBD");
@@ -61,7 +63,8 @@
   let isFull = currentParticipants >= event.maxParticipants;
 
   const handleToggleRegistration = async () => {
-    if (!user || isFull) return;
+    // Prevent action if not logged in, if full, or if the user is the organizer
+    if (!user || isFull || isOrganizer) return;
     const token = $page.data?.token;
     await toggleRegistration(event.id, token);
 
@@ -153,9 +156,7 @@
               </p>
             </div>
           </div>
-          <div
-            class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl"
-          >
+          <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl">
             <MapPin class="w-5 h-5 text-green-600 shrink-0" />
             <div>
               <span class="text-xs font-semibold uppercase text-stone-500"
@@ -166,9 +167,7 @@
               </p>
             </div>
           </div>
-          <div
-            class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl"
-          >
+          <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl">
             <Mail class="w-5 h-5 text-green-600 shrink-0" />
             <div>
               <span class="text-xs font-semibold uppercase text-stone-500"
@@ -258,24 +257,26 @@
         {/if}
 
         <div class="pt-4 border-t border-stone-100">
-          <button
-            onclick={handleToggleRegistration}
-            class="w-full py-3 rounded-xl text-white font-extrabold text-lg shadow-xl transition flex items-center justify-center
-            {isFull && !isRegistered
-              ? 'bg-red-700 cursor-not-allowed shadow-none'
-              : isRegistered
-                ? 'bg-stone-700 hover:bg-stone-800'
-                : 'bg-green-600 hover:bg-green-700 shadow-green-300/60'}"
-            disabled={isFull && !isRegistered}
-          >
-            {#if isRegistered}
-              Deregister
-            {:else if isFull}
-              Full
-            {:else}
-              Register Now
-            {/if}
-          </button>
+          {#if !isOrganizer}
+            <button
+              onclick={handleToggleRegistration}
+              class="w-full py-3 rounded-xl text-white font-extrabold text-lg shadow-xl transition flex items-center justify-center gap-2
+      {isFull && !isRegistered
+                ? 'bg-red-700 cursor-not-allowed shadow-none'
+                : isRegistered
+                  ? 'bg-stone-700 hover:bg-stone-800'
+                  : 'bg-green-600 hover:bg-green-700 shadow-green-300/60'}"
+              disabled={isFull && !isRegistered}
+            >
+              {#if isRegistered}
+                Deregister
+              {:else if isFull}
+                Full
+              {:else}
+                Register Now
+              {/if}
+            </button>
+          {/if}
         </div>
       </div>
     </div>
@@ -293,23 +294,28 @@
       role="dialog"
       onclick={(e) => e.stopPropagation()}
     >
-      <header class="p-6 border-b border-stone-100 flex items-center justify-between">
+      <header
+        class="p-6 border-b border-stone-100 flex items-center justify-between"
+      >
         <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
           <Users class="w-5 h-5 text-green-600" /> Attendees
         </h3>
-        <button 
+        <button
           onclick={() => (showParticipants = false)}
           class="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400 hover:text-stone-600"
         >
           <X class="w-5 h-5" />
         </button>
       </header>
-      
+
       <div class="max-h-[60vh] overflow-y-auto p-2">
         <table class="w-full text-left text-sm">
           <thead class="bg-stone-50 border-b border-stone-200">
             <tr>
-              <th class="px-6 py-3 font-semibold text-stone-600 uppercase tracking-wider">User Details</th>
+              <th
+                class="px-6 py-3 font-semibold text-stone-600 uppercase tracking-wider"
+                >User Details</th
+              >
             </tr>
           </thead>
           <tbody class="divide-y divide-stone-100">
@@ -338,10 +344,10 @@
           </tbody>
         </table>
       </div>
-      
+
       <footer class="p-4 bg-stone-50 border-t border-stone-100 text-center">
         <p class="text-xs text-stone-400 font-medium uppercase tracking-widest">
-            {currentParticipants} / {event.maxParticipants || "∞"} Slots Filled
+          {currentParticipants} / {event.maxParticipants || "∞"} Slots Filled
         </p>
       </footer>
     </div>

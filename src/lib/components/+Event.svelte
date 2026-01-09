@@ -7,18 +7,22 @@
     Users,
     Edit,
     Pen,
+    ShieldCheck
   } from "lucide-svelte";
   import { formatCardDate } from "$lib/helpers/dateTimeFormatter.js";
   import { enhance } from "$app/forms";
   import CreateUpdateModal from "./events/+CreateUpdateModal.svelte";
   import DeleteModal from "./DeleteModal.svelte";
   import { page } from "$app/stores";
-    import { toggleRegistration } from "$lib/helpers/events/toggleEvents";
+  import { toggleRegistration } from "$lib/helpers/events/toggleEvents";
 
   let { event } = $props();
   const user = $page.data?.user;
 
   const displayDate = formatCardDate(event.date || event.startAt);
+
+  // Identity logic
+  const isOrganizer = user?.id === event.organizerId;
 
   // Non-reactive state
   const spotsLeft = event.maxParticipants || 0;
@@ -55,7 +59,8 @@
 
   const handleRegisterClick = async (e) => {
     e.stopPropagation();
-    if (!user || isFull) return;
+    e.preventDefault(); 
+    if (!user || isFull || isOrganizer) return;
 
     const token = $page.data?.token;
     await toggleRegistration(event.id, token);
@@ -87,7 +92,7 @@
       </div>
     </div>
 
-    {#if user.role === 'GREEN_OFFICE_MEMBER'}
+    {#if user?.role === 'GREEN_OFFICE_MEMBER'}
     <div class="absolute bottom-3 right-3 flex flex-row gap-2 items-end">
       <button
         type="button"
@@ -138,22 +143,32 @@
     </div>
 
     <div class="pt-1">
-<div
-  class={`relative z-10 w-full flex items-center justify-center px-5 py-2 rounded-full text-base font-semibold shadow-lg transition-all duration-200 cursor-pointer
-    ${isFull ? 'bg-red-700 text-white opacity-80' 
-      : isRegistered ? 'bg-stone-700 text-white hover:bg-stone-800' 
-      : 'bg-green-600 text-white group-hover:bg-green-700 group-hover:-translate-y-0.5'}`}
-  onclick={handleRegisterClick}
->
-  {isRegistered ? "Deregister" : isFull ? "Full" : "Register Now"}
-</div>
+      {#if isOrganizer}
+        <div class="w-full flex items-center justify-center gap-2 py-2 rounded-full border border-green-200 bg-green-50/50 text-green-700 text-sm font-bold uppercase tracking-widest">
+          <ShieldCheck class="w-4 h-4" />
+          Your Event
+        </div>
+      {:else}
+        <div
+          role="button"
+          tabindex="0"
+          class={`relative z-10 w-full flex items-center justify-center px-5 py-2 rounded-full text-base font-semibold shadow-lg transition-all duration-200 cursor-pointer
+            ${isFull ? 'bg-red-700 text-white opacity-80' 
+              : isRegistered ? 'bg-stone-700 text-white hover:bg-stone-800' 
+              : 'bg-green-600 text-white group-hover:bg-green-700 group-hover:-translate-y-0.5'}`}
+          onclick={handleRegisterClick}
+          onkeydown={(e) => e.key === 'Enter' && handleRegisterClick(e)}
+        >
+          {isRegistered ? "Deregister" : isFull ? "Full" : "Register Now"}
+        </div>
+      {/if}
     </div>
   </div>
 </a>
 
 {#if isModalOpen}
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()}>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onclick={closeModal}>
+    <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()} role="presentation">
       <form
         method="POST"
         action="?/update"
