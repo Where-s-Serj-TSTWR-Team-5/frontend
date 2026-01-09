@@ -9,6 +9,10 @@
     Users,
     TrendingUp,
     Star,
+    Mail,
+    Eye,
+    EyeOff,
+    X,
   } from "lucide-svelte";
 
   import {
@@ -20,6 +24,7 @@
 
   let { data } = $props();
   let event = data.event.event;
+
   const user = $page.data?.user;
 
   const displayDate = formatFullDate(event.date || event.startAt, "Date TBD");
@@ -30,6 +35,9 @@
   let currentParticipants = event.currentParticipants;
   let isRegistered =
     user?.eventRegistrations?.some((r) => r.eventId === event.id) ?? false;
+
+  // State for showing the participant modal
+  let showParticipants = $state(false);
 
   const getParticipantStatus = () => {
     if (currentParticipants >= event.maxParticipants) {
@@ -146,7 +154,7 @@
             </div>
           </div>
           <div
-            class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl col-span-full"
+            class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl"
           >
             <MapPin class="w-5 h-5 text-green-600 shrink-0" />
             <div>
@@ -155,6 +163,24 @@
               >
               <p class="font-medium text-stone-800">
                 {event.location || "Online / TBD"}
+              </p>
+            </div>
+          </div>
+          <div
+            class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl"
+          >
+            <Mail class="w-5 h-5 text-green-600 shrink-0" />
+            <div>
+              <span class="text-xs font-semibold uppercase text-stone-500"
+                >Organizer</span
+              >
+              <p class="font-medium">
+                <a
+                  href={`mailto:${event.organizer.email}`}
+                  class="text-green-700 hover:text-green-800 hover:underline break-all"
+                >
+                  {event.organizer.email}
+                </a>
               </p>
             </div>
           </div>
@@ -196,9 +222,18 @@
       <div
         class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-stone-200 space-y-5"
       >
-        <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
-          <Users class="w-6 h-6 text-green-600" /> Capacity
-        </h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+            <Users class="w-6 h-6 text-green-600" /> Capacity
+          </h2>
+          <button
+            onclick={() => (showParticipants = true)}
+            class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
+          >
+            <Eye class="w-3 h-3" /> View List
+          </button>
+        </div>
+
         <div class={`p-4 rounded-xl border-2 ${participantStatus.color}`}>
           <p class="text-sm font-semibold uppercase">
             {participantStatus.text}
@@ -246,3 +281,69 @@
     </div>
   </div>
 </div>
+
+{#if showParticipants}
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+    role="presentation"
+    onclick={() => (showParticipants = false)}
+  >
+    <div
+      class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+      role="dialog"
+      onclick={(e) => e.stopPropagation()}
+    >
+      <header class="p-6 border-b border-stone-100 flex items-center justify-between">
+        <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
+          <Users class="w-5 h-5 text-green-600" /> Attendees
+        </h3>
+        <button 
+          onclick={() => (showParticipants = false)}
+          class="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400 hover:text-stone-600"
+        >
+          <X class="w-5 h-5" />
+        </button>
+      </header>
+      
+      <div class="max-h-[60vh] overflow-y-auto p-2">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-stone-50 border-b border-stone-200">
+            <tr>
+              <th class="px-6 py-3 font-semibold text-stone-600 uppercase tracking-wider">User Details</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            {#if event.registrations && event.registrations.length > 0}
+              {#each event.registrations as registration}
+                <tr class="hover:bg-stone-50 transition-colors">
+                  <td class="px-6 py-4 text-stone-700">
+                    <div class="flex flex-col">
+                      <span class="font-bold text-stone-900"
+                        >{registration.user?.userName || "Anonymous"}</span
+                      >
+                      <span class="text-xs text-stone-500 italic break-all"
+                        >{registration.user?.email || ""}</span
+                      >
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            {:else}
+              <tr>
+                <td class="px-6 py-12 text-center text-stone-400 italic">
+                  No participants registered yet.
+                </td>
+              </tr>
+            {/if}
+          </tbody>
+        </table>
+      </div>
+      
+      <footer class="p-4 bg-stone-50 border-t border-stone-100 text-center">
+        <p class="text-xs text-stone-400 font-medium uppercase tracking-widest">
+            {currentParticipants} / {event.maxParticipants || "∞"} Slots Filled
+        </p>
+      </footer>
+    </div>
+  </div>
+{/if}
