@@ -159,12 +159,25 @@
           <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl">
             <MapPin class="w-5 h-5 text-green-600 shrink-0" />
             <div>
-              <span class="text-xs font-semibold uppercase text-stone-500"
-                >Location</span
-              >
-              <p class="font-medium text-stone-800">
-                {event.location || "Online / TBD"}
-              </p>
+              <span class="text-xs font-semibold uppercase text-stone-500">
+                Location
+              </span>
+              {#if event.location}
+                <p class="font-medium text-stone-800">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query={encodeURIComponent(
+                      event.location,
+                    )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline hover:text-green-600"
+                  >
+                    {event.location}
+                  </a>
+                </p>
+              {:else}
+                <p class="font-medium text-stone-800">Online / TBD</p>
+              {/if}
             </div>
           </div>
           <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl">
@@ -226,12 +239,12 @@
             <Users class="w-6 h-6 text-green-600" /> Capacity
           </h2>
           {#if user.role === "GREEN_OFFICE_MEMBER"}
-          <button
-            onclick={() => (showParticipants = true)}
-            class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
-          >
-            <Eye class="w-3 h-3" /> View List
-          </button>
+            <button
+              onclick={() => (showParticipants = true)}
+              class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
+            >
+              <Eye class="w-3 h-3" /> View List
+            </button>
           {/if}
         </div>
 
