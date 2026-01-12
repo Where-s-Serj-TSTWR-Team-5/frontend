@@ -12,6 +12,8 @@
     Mail,
     Eye,
     X,
+    CalendarPlus,
+    Download,
   } from "lucide-svelte";
 
   import {
@@ -40,6 +42,62 @@
 
   // State for showing the participant modal
   let showParticipants = $state(false);
+  const exportToCSV = () => {
+    if (!event.registrations || event.registrations.length === 0) return;
+
+    // 1. Define Headers
+    const headers = ["Username", "Email", "Registration Date"];
+
+    // 2. Map data to rows - wrap in quotes to handle commas in names
+    const rows = event.registrations.map((registration) => [
+      registration.user?.userName || "Anonymous",
+      registration.user?.email || "N/A",
+      formatFullDate(registration.registeredAt, "Date TBD") || "N/A",
+    ]);
+
+    // 3. Combine into CSV format
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((value) => `"${value}"`).join(",")),
+    ].join("\n");
+
+    // 4. Create download link
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `Attendees_${event.title.replace(/\s+/g, "_")}.csv`,
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const formatCalDate = (date) => {
+    if (!date) return "";
+    return new Date(date).toISOString().replace(/-|:|\.\d+/g, "");
+  };
+
+  const getCalendarLinks = () => {
+    const title = encodeURIComponent(event.title);
+    const details = encodeURIComponent(event.description || "");
+    const location = encodeURIComponent(event.location || "");
+    const start = formatCalDate(event.startAt);
+    const end = formatCalDate(
+      event.endAt || new Date(new Date(event.startAt).getTime() + 3600000),
+    );
+
+    return {
+      google: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`,
+      outlook: `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${event.startAt}&enddt=${event.endAt || event.startAt}&body=${details}&location=${location}`,
+      ics: `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${start}%0ADTEND:${end}%0ASUMMARY:${title}%0ADESCRIPTION:${details}%0ALOCATION:${location}%0AEND:VEVENT%0AEND:VCALENDAR`,
+    };
+  };
+
+  const calLinks = getCalendarLinks();
 
   const getParticipantStatus = () => {
     if (currentParticipants >= event.maxParticipants) {
@@ -63,11 +121,9 @@
   let isFull = currentParticipants >= event.maxParticipants;
 
   const handleToggleRegistration = async () => {
-    // Prevent action if not logged in, if full, or if the user is the organizer
     if (!user || isFull || isOrganizer) return;
     const token = $page.data?.token;
     await toggleRegistration(event.id, token);
-
     window.location.reload();
   };
 </script>
@@ -159,12 +215,25 @@
           <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl">
             <MapPin class="w-5 h-5 text-green-600 shrink-0" />
             <div>
-              <span class="text-xs font-semibold uppercase text-stone-500"
-                >Location</span
-              >
-              <p class="font-medium text-stone-800">
-                {event.location || "Online / TBD"}
-              </p>
+              <span class="text-xs font-semibold uppercase text-stone-500">
+                Location
+              </span>
+              {#if event.location}
+                <p class="font-medium text-stone-800">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query={encodeURIComponent(
+                      event.location,
+                    )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline hover:text-green-600"
+                  >
+                    {event.location}
+                  </a>
+                </p>
+              {:else}
+                <p class="font-medium text-stone-800">Online / TBD</p>
+              {/if}
             </div>
           </div>
           <div class="flex items-center space-x-3 p-3 bg-stone-50 rounded-xl">
@@ -226,12 +295,12 @@
             <Users class="w-6 h-6 text-green-600" /> Capacity
           </h2>
           {#if user.role === "GREEN_OFFICE_MEMBER"}
-          <button
-            onclick={() => (showParticipants = true)}
-            class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
-          >
-            <Eye class="w-3 h-3" /> View List
-          </button>
+            <button
+              onclick={() => (showParticipants = true)}
+              class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
+            >
+              <Eye class="w-3 h-3" /> View List
+            </button>
           {/if}
         </div>
 
@@ -258,7 +327,7 @@
           </div>
         {/if}
 
-        <div class="pt-4 border-t border-stone-100">
+        <div class="pt-4 border-t border-stone-100 space-y-6">
           {#if !isOrganizer}
             <button
               onclick={handleToggleRegistration}
@@ -278,6 +347,42 @@
                 Register Now
               {/if}
             </button>
+          {/if}
+
+          {#if isRegistered || isOrganizer}
+            <div
+              class="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-500"
+            >
+              <div class="flex items-center gap-2 text-stone-500">
+                <CalendarPlus class="w-4 h-4" />
+                <span class="text-xs font-bold uppercase tracking-wider"
+                  >Add to Calendar</span
+                >
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <a
+                  href={calLinks.google}
+                  target="_blank"
+                  class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-stone-50 border border-stone-200 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-all text-[10px] font-bold text-stone-400"
+                >
+                  GOOGLE
+                </a>
+                <a
+                  href={calLinks.outlook}
+                  target="_blank"
+                  class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-stone-50 border border-stone-200 hover:bg-sky-50 hover:border-sky-200 hover:text-sky-700 transition-all text-[10px] font-bold text-stone-400"
+                >
+                  OUTLOOK
+                </a>
+                <a
+                  href={calLinks.ics}
+                  download={`${event.title}.ics`}
+                  class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-stone-50 border border-stone-200 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-700 transition-all text-[10px] font-bold text-stone-400"
+                >
+                  ICAL
+                </a>
+              </div>
+            </div>
           {/if}
         </div>
       </div>
@@ -299,9 +404,11 @@
       <header
         class="p-6 border-b border-stone-100 flex items-center justify-between"
       >
-        <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
-          <Users class="w-5 h-5 text-green-600" /> Attendees
-        </h3>
+        <div class="flex flex-col">
+          <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
+            <Users class="w-5 h-5 text-green-600" /> Attendees
+          </h3>
+        </div>
         <button
           onclick={() => (showParticipants = false)}
           class="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400 hover:text-stone-600"
@@ -318,6 +425,16 @@
                 class="px-6 py-3 font-semibold text-stone-600 uppercase tracking-wider"
                 >User Details</th
               >
+              <th>
+                {#if event.registrations && event.registrations.length > 0}
+                  <button
+                    onclick={exportToCSV}
+                    class="mt-1 text-[10px] font-bold text-green-600 hover:text-green-700 flex items-center gap-1 uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    <Download class="w-3 h-3" /> Export to Spreadsheet
+                  </button>
+                {/if}
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-stone-100">

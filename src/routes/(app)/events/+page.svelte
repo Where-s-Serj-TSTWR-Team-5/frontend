@@ -61,63 +61,65 @@
 </script>
 
 <div class="flex flex-col space-y-6 pb-24 bg-stone-50 min-h-screen cursor-default">
-  <header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
-    <div class="flex justify-between items-start mb-4 h-12">
-      <div>
-        <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">
-          Fruit Forest
-        </div>
-        <h1 class="font-serif text-4xl italic font-bold text-stone-900">
-          Events
-        </h1>
+<header class="px-6 pt-10 pb-4 bg-white shadow-sm rounded-b-3xl">
+  <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-4">
+    
+    <div>
+      <div class="text-xs uppercase tracking-widest text-green-700 font-bold mb-1">
+        Fruit Forest
       </div>
+      <h1 class="font-serif text-4xl italic font-bold text-stone-900">
+        Events
+      </h1>
+    </div>
 
-      <div class="flex items-center space-x-2">
-        {#if user?.role === 'GREEN_OFFICE_MEMBER'}
-          <button
-            onclick={openModal}
-            class="p-2 rounded-md bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md cursor-pointer"
-            title="Create New Event"
-          >
-            <Plus class="w-5 h-5" />
+    <div class="flex items-center gap-2 w-full md:w-auto">
+      <div class="flex-1 md:flex-none flex items-center bg-stone-100 rounded-lg p-2 md:w-64">
+        <Search class="w-4 h-4 text-stone-400 ml-1" />
+        <input
+          type="text"
+          placeholder="Search events..."
+          bind:value={searchQuery}
+          class="bg-transparent border-none outline-none text-sm w-full text-stone-800 px-2 cursor-text"
+        />
+        {#if searchQuery}
+          <button class="cursor-pointer p-1" onclick={() => (searchQuery = "")}>
+            <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
           </button>
         {/if}
-        <div class="flex items-center bg-stone-100 rounded-lg p-2 w-48 sm:w-64">
-          <Search class="w-4 h-4 text-stone-400 ml-1" />
-          <input
-            type="text"
-            placeholder="Search events..."
-            bind:value={searchQuery}
-            class="bg-transparent border-none outline-none text-sm w-full text-stone-800 px-2 cursor-text"
-          />
-          {#if searchQuery}
-            <button class="cursor-pointer p-1" onclick={() => (searchQuery = "")}>
-              <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
-            </button>
-          {/if}
-        </div>
       </div>
-    </div>
 
-    <p class="text-stone-600 italic border-l-2 border-green-500 pl-3 py-1">
-      Join activities that protect nature & earn rewards.
-    </p>
-
-    <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
-      {#each filters as f}
+      {#if user?.role === 'GREEN_OFFICE_MEMBER'}
         <button
-          onclick={() => (filter = f)}
-          class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
-            filter === f
-              ? "bg-green-700 text-white border-green-700"
-              : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
-          }`}
+          onclick={openModal}
+          class="p-2.5 rounded-lg bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md cursor-pointer shrink-0"
+          title="Create New Event"
         >
-          {f}
+          <Plus class="w-5 h-5" />
         </button>
-      {/each}
+      {/if}
     </div>
-  </header>
+  </div>
+
+  <p class="text-stone-600 italic border-l-2 border-green-500 pl-3 py-1 text-sm md:text-base">
+    Join activities that protect nature & earn rewards.
+  </p>
+
+  <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
+    {#each filters as f}
+      <button
+        onclick={() => (filter = f)}
+        class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
+          filter === f
+            ? "bg-green-700 text-white border-green-700"
+            : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
+        }`}
+      >
+        {f}
+      </button>
+    {/each}
+  </div>
+</header>
 
   {#if registeredEvents.length > 0 && !searchQuery && filter === "All"}
     <section class="px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
