@@ -172,7 +172,7 @@
     <div class="w-full max-w-2xl p-4" onclick={(e) => e.stopPropagation()}>
       <form
         method="POST"
-        action="?/update"
+        action="events?/update"
         use:enhance={() => {
           return async ({ result }) => {
             if (result.type === "success") location.reload();
