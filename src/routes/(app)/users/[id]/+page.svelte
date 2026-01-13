@@ -74,6 +74,15 @@
           >
             Edit profile
           </button>
+
+          <form method="POST" action="/api/users/logout">
+            <button
+              class="rounded-full bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-500"
+            >
+              Logout
+            </button>
+          </form>
+
         </div>
       </div>
     </main>
