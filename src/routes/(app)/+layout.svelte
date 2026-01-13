@@ -59,7 +59,7 @@
         class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-sm border-2 border-green-700 hover:bg-green-500 transition"
         title={currentUser.userName}
       >
-        Y
+        {currentUser.userName.charAt(0).toUpperCase()}
       </a>
     {/if}
 
