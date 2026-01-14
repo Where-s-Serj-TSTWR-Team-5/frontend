@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LogoutModal from '$lib/components/LogoutModal.svelte';
+  import LogoutModal from "$lib/components/LogoutModal.svelte";
 
   export let data;
   const { loggedInUser, profileUser } = data;
@@ -43,18 +43,13 @@
 
       <div class="mt-6 space-y-3">
         <div class="flex justify-between rounded-lg bg-stone-100 px-4 py-2">
-          <span class="text-stone-500 text-sm">User ID</span>
-          <span class="font-medium text-stone-800 text-sm">{profileUser.user.id}</span>
-        </div>
-
-        <div class="flex justify-between rounded-lg bg-stone-100 px-4 py-2">
           <span class="text-stone-500 text-sm">Points</span>
           <span class="font-medium text-stone-800 text-sm">{profileUser.user.points}</span>
         </div>
       </div>
 
       <div class="mt-6 flex gap-3">
-        <a href="/users" class="flex-1 rounded-full bg-stone-300 py-2 text-center text-sm font-bold text-stone-700 hover:bg-stone-400">
+        <a href="/" class="flex-1 rounded-full bg-stone-300 py-2 text-center text-sm font-bold text-stone-700 hover:bg-stone-400">
           Back
         </a>
 
