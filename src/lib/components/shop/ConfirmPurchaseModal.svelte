@@ -1,30 +1,46 @@
 <script lang="ts">
-  import type { Reward } from '$lib/types';
+  import { page } from "$app/stores";
+  import { PUBLIC_API_URL } from '$env/static/public';
 
-  export let reward: Reward;
-  export let userPoints: number;
+  export let reward;
+  export let userPoints;
   export let onCancel: () => void;
-  export let onConfirm: () => void;
 
   let loading = false;
   let error = '';
 
   $: canBuy = Number(userPoints) >= Number(reward.requiredPoints);
+  const token = $page.data?.token;
 
-  async function handleConfirm() {
-    if (!canBuy || loading) return;
-
-    loading = true;
-    error = '';
+  async function handleConfirm(rewardId: number) { 
+    if (!token) {
+      alert("You must be logged in to purchase rewards");
+      return;
+    }
 
     try {
-      await onConfirm();
-    } catch (e: any) {
-      error = e?.message ?? 'Purchase failed';
-    } finally {
-      loading = false;
+      const res = await fetch(`${PUBLIC_API_URL}/rewards/purchase/${rewardId}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        alert(`Success! ${data.message}`);
+        
+        window.location.reload(); 
+      } else {
+        alert("Purchase failed: " + (data.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Connection error:", err);
+      alert("Error connecting to the server.");
     }
-  }
+}
 </script>
 
 <div class="overlay">
@@ -49,12 +65,16 @@
       <button class="cancel" on:click={onCancel}>Cancel</button>
 
       <button
-        class="confirm {canBuy && !loading ? 'active' : ''}"
-        disabled={!canBuy || loading}
-        on:click={handleConfirm}
-      >
-        {#if loading}Processing...{:else}Confirm ({reward.requiredPoints} 🪙){/if}
-      </button>
+  class="confirm {canBuy && !loading ? 'active' : ''}"
+  disabled={!canBuy || loading}
+  on:click={() => handleConfirm(reward.id)}
+>
+  {#if loading}
+    Processing...
+  {:else}
+    Confirm ({reward.requiredPoints} 🪙)
+  {/if}
+</button>
     </div>
   </div>
 </div>

@@ -4,21 +4,29 @@
   import { onMount } from 'svelte';
   import RewardCard from '$lib/components/shop/RewardCard.svelte';
   import ConfirmPurchaseModal from '$lib/components/shop/ConfirmPurchaseModal.svelte';
-  import type { Reward } from '$lib/types';
+  // import type { Reward } from '$lib/types';
+  import { page } from "$app/stores";
+  import { PUBLIC_API_URL } from '$env/static/public';
 
   let userPoints = 0;
-  let purchasedRewards: string[] = [];
-  let rewards: Reward[] = [];
-  let selectedReward: Reward | null = null;
+  let purchasedRewards = [];
+  let rewards = [];
+  let selectedReward = null;
 
-  async function fetchUser() {
-    const res = await fetch('/api/users');
+  /*async function fetchUser() {
+    const res = await fetch(`${PUBLIC_API_URL}/users/me`);
     const data = await res.json();
     if (!data.error) {
       userPoints = data.points;
       purchasedRewards = data.purchasedRewards || [];
     }
-  }
+  }*/
+
+    const user = $page.data?.user;
+    userPoints = user.points;
+    purchasedRewards = [];
+    console.log(user);
+
 
   async function fetchRewards() {
   try {
@@ -35,36 +43,16 @@
 }
 
   onMount(async () => {
-  await fetchUser();
+  // await fetchUser();
   await fetchRewards();
 });
 
-  function openModal(reward: Reward) {
+  function openModal(reward) {
     selectedReward = reward;
   }
 
   function closeModal() {
     selectedReward = null;
-  }
-
-  async function confirmPurchase() {
-    if (!selectedReward) return;
-
-    const res = await fetch('/api/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rewardId: selectedReward.id })
-    });
-
-    const data = await res.json();
-
-    if (!data.error) {
-      userPoints = data.points;
-      purchasedRewards = data.purchasedRewards || [];
-      selectedReward = null;
-    } else {
-      alert(data.error);
-    }
   }
 
   function isPurchased(rewardId: string) {
@@ -99,7 +87,6 @@
     reward={selectedReward}
     userPoints={userPoints}
     onCancel={closeModal}
-    onConfirm={confirmPurchase}
   />
 {/if}
 
