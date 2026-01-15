@@ -37,7 +37,6 @@
   const events = data.events.data;
   const user = $page.data?.user;
   const eventLabels = $page.data?.eventLabels.data;
-  eventLabels.unshift({category: 'All'});
 
   // Reactive Logic for Main Feed
   let filteredEvents = $derived(
