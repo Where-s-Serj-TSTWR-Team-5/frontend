@@ -4,6 +4,7 @@
   import { page } from "$app/stores";
   import { enhance } from "$app/forms";
   import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
+    import { EVENT_FILTERS } from "$lib/types/event.js";
 
   let { data } = $props();
 
@@ -25,15 +26,8 @@
     maxParticipants: 0,
   });
 
-  const filters = [
-    "All",
-    "Gardening",
-    "Sustainability",
-    "Workshops",
-    "Clean-up",
-  ];
-
   const events = data.events.data;
+  console.log(events);
   const user = $page.data?.user;
 
   // Reactive Logic for Main Feed
@@ -106,7 +100,7 @@
   </p>
 
   <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
-    {#each filters as f}
+    {#each EVENT_FILTERS as f}
       <button
         onclick={() => (filter = f)}
         class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
