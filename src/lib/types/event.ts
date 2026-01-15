@@ -11,7 +11,7 @@ export function categoryName(category) {
   switch (category) {
     case "SUSTAINABILITY": return "🌱Sustainability";
     case "GARDENING": return "🌹Gardening";
-    case "WORKSHOP": return "🔨Workshops";
+    case "WORKSHOP": return "🔨Workshop";
     case "CLEAN_UP": return "🗑️Clean-up";
   }
   return 'All';

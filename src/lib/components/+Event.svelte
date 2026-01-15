@@ -15,6 +15,7 @@
   import { page } from "$app/stores";
   import { toggleRegistration } from "$lib/helpers/events/toggleEvents";
   import { writable } from 'svelte/store';
+    import { categoryName } from "$lib/types/event";
 
   let { event } = $props();
   const user = $page.data?.user;
@@ -80,11 +81,12 @@
       class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
     />
     <div class="absolute inset-0 bg-linear-to-t from-black/50 via-black/20 to-transparent"></div>
-
+    
+    {#if event.label}
     <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1 shadow">
-      <Leaf class="w-4 h-4 text-green-600" />
-      <span class="text-xs font-semibold text-stone-700">{event.category || "Eco Event"}</span>
+      <span class="text-xs font-semibold text-stone-700">{categoryName(event.label.category)}</span>
     </div>
+    {/if}
 
     <div class="absolute top-3 right-3 flex flex-col gap-2 items-end">
       <div class="bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1 shadow-lg">
