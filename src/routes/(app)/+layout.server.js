@@ -17,12 +17,11 @@ export const load = async ({ cookies, params, fetch }) => {
     const events = await getData(`${PUBLIC_API_URL}/events/`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-
     const eventLabels = await getData(`${PUBLIC_API_URL}/events/labels`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-
-    return { user, events, token };
+    
+    return { user, events, token, eventLabels };
   } catch (err) {
     throw error(500, 'Failed to load dashboard data');
   }

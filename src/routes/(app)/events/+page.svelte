@@ -36,7 +36,7 @@
 
   const events = data.events.data;
   const user = $page.data?.user;
-  const eventLabels = $page.data?.eventLabels;
+  const eventLabels = $page.data?.eventLabels.data;
 
   // Reactive Logic for Main Feed
   let filteredEvents = $derived(
@@ -46,6 +46,7 @@
         event.title.toLowerCase().includes(query) ||
         (event.subtitle && event.subtitle.toLowerCase().includes(query));
 
+      // Compare exact label string (with emoji)
       const matchesCategory =
         filterCategory === "All" ||
         (event.label?.category ?? "") === filterCategory;
@@ -122,16 +123,17 @@
     </p>
 
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
-      {#each eventLabels as f}
+      <!-- Filter Buttons -->
+      {#each eventLabels as label}
         <button
-          onclick={() => (filterCategory = f)}
+          onclick={() => (filterCategory = label.category)}
           class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
-            filterCategory == f
+            filterCategory === label.category
               ? "bg-green-700 text-white border-green-700"
               : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
           }`}
         >
-          {f}
+          {label.category}
         </button>
       {/each}
     </div>
@@ -215,7 +217,7 @@
         class="text-center py-20 bg-white rounded-3xl border border-dashed border-stone-300"
       >
         <p class="text-stone-400">
-          No events found matching "{searchQuery}" in {categoryName(filterCategory)}.
+          No events found matching "{searchQuery}" in {filterCategory}.
         </p>
       </div>
     {:else}
