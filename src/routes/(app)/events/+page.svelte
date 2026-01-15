@@ -37,6 +37,7 @@
   const events = data.events.data;
   const user = $page.data?.user;
   const eventLabels = $page.data?.eventLabels.data;
+  eventLabels.unshift({category: 'All'});
 
   // Reactive Logic for Main Feed
   let filteredEvents = $derived(
@@ -46,7 +47,6 @@
         event.title.toLowerCase().includes(query) ||
         (event.subtitle && event.subtitle.toLowerCase().includes(query));
 
-      // Compare exact label string (with emoji)
       const matchesCategory =
         filterCategory === "All" ||
         (event.label?.category ?? "") === filterCategory;
