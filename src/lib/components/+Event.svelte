@@ -15,7 +15,6 @@
   import { page } from "$app/stores";
   import { toggleRegistration } from "$lib/helpers/events/toggleEvents";
   import { writable } from 'svelte/store';
-    import { categoryName } from "$lib/types/event";
 
   let { event } = $props();
   const user = $page.data?.user;
@@ -84,7 +83,7 @@
     
     {#if event.label}
     <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1 shadow">
-      <span class="text-xs font-semibold text-stone-700">{categoryName(event.label.category)}</span>
+      <span class="text-xs font-semibold text-stone-700">{event.label.category}</span>
     </div>
     {/if}
 

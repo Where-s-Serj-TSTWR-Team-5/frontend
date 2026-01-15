@@ -14,9 +14,6 @@
   import { page } from "$app/stores";
   import { enhance } from "$app/forms";
   import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
-  import { EVENT_CATEGORIES, categoryName } from "$lib/types/event.js";
-  const EventCategories = Object.values(EVENT_CATEGORIES);
-  EventCategories.unshift("All");
   let { data } = $props();
 
   let filterCategory = $state("All");
@@ -39,6 +36,7 @@
 
   const events = data.events.data;
   const user = $page.data?.user;
+  const eventLabels = $page.data?.eventLabels;
 
   // Reactive Logic for Main Feed
   let filteredEvents = $derived(
@@ -124,7 +122,7 @@
     </p>
 
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
-      {#each EventCategories as f}
+      {#each eventLabels as f}
         <button
           onclick={() => (filterCategory = f)}
           class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
@@ -133,7 +131,7 @@
               : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
           }`}
         >
-          {categoryName(f)}
+          {f}
         </button>
       {/each}
     </div>
