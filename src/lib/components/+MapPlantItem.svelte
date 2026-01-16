@@ -1,17 +1,11 @@
 <script>
-  let { plant = {} } = $props();
+  const { plant = {} } = $props();
   
   // --- Helpers ---
   const statusColors = {
-    critical: "bg-red-500",
-    warning: "bg-amber-400",
-    healthy: "bg-green-500",
-  };
-
-  const statusBorders = {
-    critical: "border-red-400",
-    warning: "border-amber-300",
-    healthy: "border-stone-200",
+    critical: 'bg-red-500',
+    warning: 'bg-amber-400',
+    healthy: 'bg-green-500',
   };
 </script>
 

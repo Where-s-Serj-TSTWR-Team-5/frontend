@@ -1,17 +1,17 @@
 <script lang="ts">
-  let { plant = {} } = $props();
+  const { plant = {} } = $props();
 
   // --- Helpers ---
   const statusColors = {
-    critical: "bg-red-500",
-    warning: "bg-amber-400",
-    healthy: "bg-green-500",
+    critical: 'bg-red-500',
+    warning: 'bg-amber-400',
+    healthy: 'bg-green-500',
   };
 
   const statusBorders = {
-    critical: "border-3 border-red-400",
-    warning: "border-3 border-amber-300",
-    healthy: "border-none",
+    critical: 'border-3 border-red-400',
+    warning: 'border-3 border-amber-300',
+    healthy: 'border-none',
   };
 </script>
 

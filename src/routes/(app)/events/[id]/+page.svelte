@@ -14,30 +14,30 @@
     X,
     CalendarPlus,
     Download,
-  } from "lucide-svelte";
+  } from 'lucide-svelte';
 
   import {
     formatFullDate,
     formatTime,
-  } from "$lib/helpers/dateTimeFormatter.js";
-  import { toggleRegistration } from "../../../../lib/helpers/events/toggleEvents.js";
-  import { page } from "$app/stores";
+  } from '$lib/helpers/dateTimeFormatter.js';
+  import { toggleRegistration } from '../../../../lib/helpers/events/toggleEvents.js';
+  import { page } from '$app/stores';
 
-  let { data } = $props();
-  let event = data.event.event;
+  const { data } = $props();
+  const event = data.event.event;
 
   const user = $page.data?.user;
 
   // Check if current user is the organizer
   const isOrganizer = user?.id === event.organizerId;
 
-  const displayDate = formatFullDate(event.date || event.startAt, "Date TBD");
-  const displayStartTime = formatTime(event.startAt, "Time TBD");
-  const displayEndTime = formatTime(event.endAt, "Time TBD");
+  const displayDate = formatFullDate(event.date || event.startAt, 'Date TBD');
+  const displayStartTime = formatTime(event.startAt, 'Time TBD');
+  const displayEndTime = formatTime(event.endAt, 'Time TBD');
 
   // Local reactive state
-  let currentParticipants = event.currentParticipants;
-  let isRegistered =
+  const currentParticipants = event.currentParticipants;
+  const isRegistered =
     user?.eventRegistrations?.some((r) => r.eventId === event.id) ?? false;
 
   // State for showing the participant modal
@@ -46,45 +46,45 @@
     if (!event.registrations || event.registrations.length === 0) return;
 
     // 1. Define Headers
-    const headers = ["Username", "Email", "Registration Date"];
+    const headers = ['Username', 'Email', 'Registration Date'];
 
     // 2. Map data to rows - wrap in quotes to handle commas in names
     const rows = event.registrations.map((registration) => [
-      registration.user?.userName || "Anonymous",
-      registration.user?.email || "N/A",
-      formatFullDate(registration.registeredAt, "Date TBD") || "N/A",
+      registration.user?.userName || 'Anonymous',
+      registration.user?.email || 'N/A',
+      formatFullDate(registration.registeredAt, 'Date TBD') || 'N/A',
     ]);
 
     // 3. Combine into CSV format
     const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.map((value) => `"${value}"`).join(",")),
-    ].join("\n");
+      headers.join(','),
+      ...rows.map((row) => row.map((value) => `"${value}"`).join(',')),
+    ].join('\n');
 
     // 4. Create download link
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
     link.setAttribute(
-      "download",
-      `Attendees_${event.title.replace(/\s+/g, "_")}.csv`,
+      'download',
+      `Attendees_${event.title.replace(/\s+/g, '_')}.csv`,
     );
-    link.style.visibility = "hidden";
+    link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   const formatCalDate = (date) => {
-    if (!date) return "";
-    return new Date(date).toISOString().replace(/-|:|\.\d+/g, "");
+    if (!date) return '';
+    return new Date(date).toISOString().replace(/-|:|\.\d+/g, '');
   };
 
   const getCalendarLinks = () => {
     const title = encodeURIComponent(event.title);
-    const details = encodeURIComponent(event.description || "");
-    const location = encodeURIComponent(event.location || "");
+    const details = encodeURIComponent(event.description || '');
+    const location = encodeURIComponent(event.location || '');
     const start = formatCalDate(event.startAt);
     const end = formatCalDate(
       event.endAt || new Date(new Date(event.startAt).getTime() + 3600000),
@@ -102,23 +102,23 @@
   const getParticipantStatus = () => {
     if (currentParticipants >= event.maxParticipants) {
       return {
-        text: "Fully Booked",
-        color: "text-red-700 bg-red-100 border-red-200",
+        text: 'Fully Booked',
+        color: 'text-red-700 bg-red-100 border-red-200',
       };
     } else if (currentParticipants / event.maxParticipants > 0.75) {
       return {
-        text: "Almost Full",
-        color: "text-amber-700 bg-amber-100 border-amber-200",
+        text: 'Almost Full',
+        color: 'text-amber-700 bg-amber-100 border-amber-200',
       };
     }
     return {
-      text: "Seats Available",
-      color: "text-green-700 bg-green-100 border-green-200",
+      text: 'Seats Available',
+      color: 'text-green-700 bg-green-100 border-green-200',
     };
   };
 
-  let participantStatus = getParticipantStatus();
-  let isFull = currentParticipants >= event.maxParticipants;
+  const participantStatus = getParticipantStatus();
+  const isFull = currentParticipants >= event.maxParticipants;
 
   const handleToggleRegistration = async () => {
     if (!user || isFull || isOrganizer) return;
@@ -134,7 +134,7 @@
   <div class="relative h-72 md:h-96 w-full shrink-0">
     <img
       alt={event.title}
-      src={event.banner || event.thumbnail || "https://picsum.photos/1200/800"}
+      src={event.banner || event.thumbnail || 'https://picsum.photos/1200/800'}
       class="w-full h-full object-cover"
     />
     <button
@@ -151,7 +151,7 @@
       <span
         class="text-sm font-bold tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md"
       >
-        {event.category || "Eco Event"}
+        {event.category || 'Eco Event'}
       </span>
       <h1
         class="text-4xl lg:text-5xl font-extrabold text-stone-900 mt-2 leading-tight drop-shadow-lg"
@@ -178,7 +178,7 @@
         </h2>
         <p class="text-stone-600 text-base leading-relaxed whitespace-pre-wrap">
           {event.description ||
-            "No detailed description provided for this event."}
+            'No detailed description provided for this event.'}
         </p>
       </div>
 
@@ -294,7 +294,7 @@
           <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
             <Users class="w-6 h-6 text-green-600" /> Capacity
           </h2>
-          {#if user.role === "GREEN_OFFICE_MEMBER"}
+          {#if user.role === 'GREEN_OFFICE_MEMBER'}
             <button
               onclick={() => (showParticipants = true)}
               class="text-xs font-bold uppercase py-1 px-3 rounded-lg bg-stone-100 text-stone-600 hover:bg-green-100 hover:text-green-700 transition flex items-center gap-1 cursor-pointer"
@@ -313,7 +313,7 @@
               >{currentParticipants}</span
             >
             <span class="text-lg text-stone-600 font-medium"
-              >/ {event.maxParticipants || "∞"}</span
+              >/ {event.maxParticipants || '∞'}</span
             >
           </div>
         </div>
@@ -444,10 +444,10 @@
                   <td class="px-6 py-4 text-stone-700">
                     <div class="flex flex-col">
                       <span class="font-bold text-stone-900"
-                        >{registration.user?.userName || "Anonymous"}</span
+                        >{registration.user?.userName || 'Anonymous'}</span
                       >
                       <span class="text-xs text-stone-500 italic break-all"
-                        >{registration.user?.email || ""}</span
+                        >{registration.user?.email || ''}</span
                       >
                     </div>
                   </td>
@@ -466,7 +466,7 @@
 
       <footer class="p-4 bg-stone-50 border-t border-stone-100 text-center">
         <p class="text-xs text-stone-400 font-medium uppercase tracking-widest">
-          {currentParticipants} / {event.maxParticipants || "∞"} Slots Filled
+          {currentParticipants} / {event.maxParticipants || '∞'} Slots Filled
         </p>
       </footer>
     </div>

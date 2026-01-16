@@ -1,5 +1,5 @@
-import { getData } from "$lib/helpers/ajaxhelper.js";
-import { PUBLIC_API_URL } from "$env/static/public";
+import { getData } from '$lib/helpers/ajaxhelper.js';
+import { PUBLIC_API_URL } from '$env/static/public';
 
 /**
  * Function to load appointments

@@ -5,27 +5,16 @@
   import RewardCard from '$lib/components/shop/RewardCard.svelte';
   import ConfirmPurchaseModal from '$lib/components/shop/ConfirmPurchaseModal.svelte';
   // import type { Reward } from '$lib/types';
-  import { page } from "$app/stores";
-  import { PUBLIC_API_URL } from '$env/static/public';
+  import { page } from '$app/stores';
 
   let userPoints = 0;
   let purchasedRewards = [];
   let rewards = [];
   let selectedReward = null;
 
-  /*async function fetchUser() {
-    const res = await fetch(`${PUBLIC_API_URL}/users/me`);
-    const data = await res.json();
-    if (!data.error) {
-      userPoints = data.points;
-      purchasedRewards = data.purchasedRewards || [];
-    }
-  }*/
-
     const user = $page.data?.user;
     userPoints = user.points;
     purchasedRewards = [];
-    console.log(user);
 
 
   async function fetchRewards() {
@@ -35,7 +24,6 @@
 
     const data = await res.json();
     rewards = Array.isArray(data.data) ? data.data : data; // your backend wraps in `data` sometimes
-    console.log('REWARDS', rewards);
   } catch (err) {
     console.error('Failed to fetch rewards:', err);
     rewards = [];

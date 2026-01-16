@@ -1,56 +1,56 @@
 <script>
-  import { Search, X, Calendar, Check, Plus, MapPin, Clock } from "lucide-svelte";
-  import Event from "$lib/components/+Event.svelte";
-  import { page } from "$app/stores";
-  import { enhance } from "$app/forms";
-  import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
+  import { Search, X, Calendar, Check, Plus, MapPin } from 'lucide-svelte';
+  import Event from '$lib/components/+Event.svelte';
+  import { page } from '$app/stores';
+  import { enhance } from '$app/forms';
+  import CreateUpdateModal from '$lib/components/events/+CreateUpdateModal.svelte';
 
-  let { data } = $props();
+  const { data } = $props();
 
-  let filter = $state("All");
-  let searchQuery = $state("");
+  let filter = $state('All');
+  let searchQuery = $state('');
   let isModalOpen = $state(false);
 
-  let formData = $state({
-    title: "",
-    description: "",
-    thumbnailUrl: "",
-    bannerUrl: "",
-    date: "",
-    startAt: "",
-    endAt: "",
-    location: "",
+  const formData = $state({
+    title: '',
+    description: '',
+    thumbnailUrl: '',
+    bannerUrl: '',
+    date: '',
+    startAt: '',
+    endAt: '',
+    location: '',
     points: 100,
     studyPoints: 0,
     maxParticipants: 0,
   });
 
   const filters = [
-    "All",
-    "Gardening",
-    "Sustainability",
-    "Workshops",
-    "Clean-up",
+    'All',
+    'Gardening',
+    'Sustainability',
+    'Workshops',
+    'Clean-up',
   ];
 
   const events = data.events.data;
   const user = $page.data?.user;
 
   // Reactive Logic for Main Feed
-  let filteredEvents = $derived(
+  const filteredEvents = $derived(
     events.filter((event) => {
       const query = searchQuery.toLowerCase();
       const matchesSearch =
         event.title.toLowerCase().includes(query) ||
         (event.subtitle && event.subtitle.toLowerCase().includes(query));
 
-      const matchesCategory = filter === "All" || event.category === filter;
+      const matchesCategory = filter === 'All' || event.category === filter;
 
       return matchesSearch && matchesCategory;
     })
   );
 
-  let registeredEvents = $derived(
+  const registeredEvents = $derived(
     events.filter((event) => 
       user?.eventRegistrations?.some((reg) => reg.eventId === event.id)
     )
@@ -83,7 +83,7 @@
           class="bg-transparent border-none outline-none text-sm w-full text-stone-800 px-2 cursor-text"
         />
         {#if searchQuery}
-          <button class="cursor-pointer p-1" onclick={() => (searchQuery = "")}>
+          <button class="cursor-pointer p-1" onclick={() => (searchQuery = '')}>
             <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
           </button>
         {/if}
@@ -111,8 +111,8 @@
         onclick={() => (filter = f)}
         class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
           filter === f
-            ? "bg-green-700 text-white border-green-700"
-            : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
+            ? 'bg-green-700 text-white border-green-700'
+            : 'bg-white text-stone-600 border-stone-200 hover:border-green-300'
         }`}
       >
         {f}
@@ -121,7 +121,7 @@
   </div>
 </header>
 
-  {#if registeredEvents.length > 0 && !searchQuery && filter === "All"}
+  {#if registeredEvents.length > 0 && !searchQuery && filter === 'All'}
     <section class="px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-serif text-2xl italic font-bold text-stone-800">
@@ -141,7 +141,7 @@
             <div class="flex gap-4">
               <div class="w-16 h-16 rounded-xl overflow-hidden bg-stone-100 shrink-0">
                 <img 
-                  src={event.thumbnail || "https://picsum.photos/200"} 
+                  src={event.thumbnail || 'https://picsum.photos/200'} 
                   alt={event.title} 
                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
@@ -174,7 +174,7 @@
   <main class="px-6">
     <div class="flex items-center justify-between mb-4">
         <h2 class="font-serif text-2xl italic font-bold text-stone-800">
-            {filter === "All" ? "Explore Events" : `${filter} Events`}
+            {filter === 'All' ? 'Explore Events' : `${filter} Events`}
         </h2>
     </div>
 
@@ -199,7 +199,7 @@
         class="w-full max-w-2xl"
         use:enhance={() => {
           return async ({ result }) => {
-            if (result.type === "success") {
+            if (result.type === 'success') {
               location.reload();
             }
           };
