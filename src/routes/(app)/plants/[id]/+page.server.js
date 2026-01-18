@@ -1,49 +1,68 @@
-// src/routes/plants/[id]/+page.server.ts
-import {getData} from '$lib/helpers/ajaxhelper.js';
-import {PUBLIC_API_URL} from '$env/static/public';
-import {error, redirect} from '@sveltejs/kit';
+// src/routes/plants/[id]/+page.server.js
+import { getData } from '$lib/helpers/ajaxhelper.js';
+import { PUBLIC_API_URL } from '$env/static/public';
+import { error, redirect, fail } from '@sveltejs/kit';
 
-export const load = async ({cookies, params}) => {
+export const load = async ({ cookies, params }) => {
+  const token = cookies.get('token');
+  const plantId = params.id;
+
+  if (!token) throw redirect(302, '/login');
+
+  try {
+    const user = await getData(`${PUBLIC_API_URL}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const rawPlant = await getData(`${PUBLIC_API_URL}/plants/${plantId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const plant = rawPlant?.data ?? rawPlant;
+
+    const rawOwnerHistory = await getData(`${PUBLIC_API_URL}/plants/${plantId}/owner-history`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const ownerHistory = rawOwnerHistory?.data ?? rawOwnerHistory;
+
+    return { user, plant, ownerHistory, token };
+  } catch (err) {
+    console.error('❌ Plant page load failed:', err);
+    throw error(500, err?.message ?? 'Failed to load plant data');
+  }
+};
+
+export const actions = {
+  delete: async ({ cookies, params, fetch }) => {
     const token = cookies.get('token');
-    const plantId = params.id;
+    if (!token) throw redirect(302, '/login');
 
-    if (!token) {
-        throw redirect(302, '/login');
+    const res = await fetch(`${PUBLIC_API_URL}/plants/${params.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.status === 204) {
+      throw redirect(303, '/plants?deleted=1');
     }
 
-    try {
-        const user = await getData(`${PUBLIC_API_URL}/users/me`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+    return fail(res.status, { message: 'Delete failed' });
+  },
 
+  // ✅ NEW: watered today
+  wateredToday: async ({ cookies, params, fetch }) => {
+    const token = cookies.get('token');
+    if (!token) throw redirect(302, '/login');
 
-        // Plant detail
-        const rawPlant = await getData(`${PUBLIC_API_URL}/plants/${plantId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+    const res = await fetch(`${PUBLIC_API_URL}/plants/${params.id}/watered-today`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-        // normalize (same idea as rewards)
-        const plant = rawPlant
-            ?.data ?? rawPlant;
-
-        return {user, plant, token};
-
-        /**
-     * Optional:
-     * If you have a PlantedPlants endpoint, fetch it here so we can check ownerID.
-     * Example (change to your real endpoint):
-     *
-     * const plantedPlant = await getData(`${PUBLIC_API_URL}/plantedplants/by-plant/${plantId}`, {
-     *   headers: { Authorization: `Bearer ${token}` }
-     * });
-     */
-
-        return {user, plant, token};
-    } catch (err) {
-        throw error(500, 'Failed to load plant data');
+    if (!res.ok) {
+      return fail(res.status, { message: 'Watering failed' });
     }
+
+    // reload same page so waterLevel updates in UI
+    throw redirect(303, `/plants/${params.id}?watered=1`);
+  }
 };

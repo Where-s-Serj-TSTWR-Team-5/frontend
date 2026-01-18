@@ -18,7 +18,11 @@ export const load = async ({ cookies, params, fetch }) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    return { user, events, token };
+    const plants = await getData(`${PUBLIC_API_URL}/plants/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return { user, events, plants, token };
   } catch (err) {
     throw error(500, 'Failed to load dashboard data');
   }

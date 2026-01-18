@@ -89,7 +89,7 @@
         {/if}
       </div>
 
-      {#if user?.role === 'GREEN_OFFICE_MEMBER'}
+      {#if user?.role === 'GREEN_OFFICE_MEMBER', 'USER'}
         <button
           onclick={openModal}
           class="p-2.5 rounded-lg bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md cursor-pointer shrink-0"
