@@ -1,60 +1,60 @@
 <script>
-  import { Trophy, Leaf, Calendar } from "lucide-svelte";
+  import { Trophy, Leaf, Calendar } from 'lucide-svelte';
 
-  import Event from "$lib/components/+Event.svelte";
-  import Plant from "$lib/components/+Plant.svelte";
-  import MapPlantItem from "$lib/components/+MapPlantItem.svelte";
-    import { goto } from "$app/navigation";
+  import Event from '$lib/components/+Event.svelte';
+  import Plant from '$lib/components/+Plant.svelte';
+  import MapPlantItem from '$lib/components/+MapPlantItem.svelte';
+    import { goto } from '$app/navigation';
 
-  let { data } = $props();
+  const { data } = $props();
   const events = data.events.data;
 
   // --- Mock Data ---
   const PLANTS = [
     {
       id: 1,
-      name: "Mango",
-      type: "Fruit Tree",
-      status: "critical",
-      image: "🥭",
-      statusDetails: "Water: Sufficient, Sunlight: Critical",
-      mapPosition: { top: "65%", left: "30%" },
+      name: 'Mango',
+      type: 'Fruit Tree',
+      status: 'critical',
+      image: '🥭',
+      statusDetails: 'Water: Sufficient, Sunlight: Critical',
+      mapPosition: { top: '65%', left: '30%' },
     },
     {
       id: 2,
-      name: "Carrot",
-      type: "Root Vegetable",
-      status: "warning",
-      image: "🥕",
-      statusDetails: "Water: Sufficient, Sunlight: Insufficient",
-      mapPosition: { top: "35%", left: "70%" },
+      name: 'Carrot',
+      type: 'Root Vegetable',
+      status: 'warning',
+      image: '🥕',
+      statusDetails: 'Water: Sufficient, Sunlight: Insufficient',
+      mapPosition: { top: '35%', left: '70%' },
     },
     {
       id: 3,
-      name: "Tomato",
-      type: "Heritage Beefsteak",
-      status: "healthy",
-      image: "🍅",
-      statusDetails: "Water: Sufficient, Sunlight: Sufficient",
-      mapPosition: { top: "50%", left: "45%" },
+      name: 'Tomato',
+      type: 'Heritage Beefsteak',
+      status: 'healthy',
+      image: '🍅',
+      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
+      mapPosition: { top: '50%', left: '45%' },
     },
     {
       id: 4,
-      name: "Pear",
-      type: "Fruit Tree",
-      status: "healthy",
-      image: "🍐",
-      statusDetails: "Water: Sufficient, Sunlight: Sufficient",
-      mapPosition: { top: "40%", left: "25%" },
+      name: 'Pear',
+      type: 'Fruit Tree',
+      status: 'healthy',
+      image: '🍐',
+      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
+      mapPosition: { top: '40%', left: '25%' },
     },
     {
       id: 5,
-      name: "Basil",
-      type: "Herb",
-      status: "healthy",
-      image: "🌿",
-      statusDetails: "Water: Sufficient, Sunlight: Sufficient",
-      mapPosition: { top: "70%", left: "60%" },
+      name: 'Basil',
+      type: 'Herb',
+      status: 'healthy',
+      image: '🌿',
+      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
+      mapPosition: { top: '70%', left: '60%' },
     },
   ];
 </script>

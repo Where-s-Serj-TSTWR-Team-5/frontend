@@ -26,7 +26,7 @@
 
     await goto('/'); 
 
-    } catch (err) {
+    } catch {
       error = 'Something went wrong';
     } finally {
       loading = false;

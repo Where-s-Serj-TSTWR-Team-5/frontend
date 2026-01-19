@@ -1,5 +1,5 @@
-import { PUBLIC_API_URL } from "$env/static/public";
-import { fail } from "@sveltejs/kit";
+import { PUBLIC_API_URL } from '$env/static/public';
+import { fail } from '@sveltejs/kit';
 
 export const actions = {
     create: async ({ request, fetch, cookies }) => {
@@ -66,8 +66,8 @@ function mapFormDataToPayload(data) {
         banner: data.get('bannerUrl'),
         location: data.get('location'),
         date: data.get('date'),
-        startAt: startAt,
-        endAt: endAt,
+        startAt,
+        endAt,
         studyPoints: Number(data.get('studyPoints')),
         points: Number(data.get('points')),
         maxParticipants: Number(data.get('maxParticipants')),

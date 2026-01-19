@@ -21,7 +21,7 @@
   interface Props {
     children?: import('svelte').Snippet;
   }
-  let { children }: Props = $props();
+  const { children }: Props = $props();
 
   function isActive(href: string) {
     return $page.url.pathname === href;

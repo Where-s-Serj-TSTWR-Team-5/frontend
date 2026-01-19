@@ -19,18 +19,18 @@ function isValidDate(dateInput) {
  * Formats a date for HTML <input type="date"> (YYYY-MM-DD).
  */
 export function formatForDateInput(dateInput) {
-  if (!isValidDate(dateInput)) return "";
+  if (!isValidDate(dateInput)) return '';
   const d = new Date(dateInput);
-  return d.toISOString().split("T")[0];
+  return d.toISOString().split('T')[0];
 }
 
 /**
  * Formats a time for HTML <input type="time"> (HH:MM).
  */
 export function formatForTimeInput(dateInput) {
-  if (!isValidDate(dateInput)) return "";
+  if (!isValidDate(dateInput)) return '';
   const d = new Date(dateInput);
-  return d.toISOString().split("T")[1].substring(0, 5);
+  return d.toISOString().split('T')[1].substring(0, 5);
 }
 
 /**
@@ -39,17 +39,17 @@ export function formatForTimeInput(dateInput) {
  * @param {string} fallback The string to return if the date is invalid or missing.
  * @returns {string} The formatted date string.
  */
-export function formatCardDate(dateInput, fallback = "Date TBD") {
+export function formatCardDate(dateInput, fallback = 'Date TBD') {
   if (!isValidDate(dateInput)) return fallback;
 
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "short",
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'short',
     }).format(new Date(dateInput));
   } catch (e) {
-    console.error("formatCardDate error:", e);
-    return "Invalid Date";
+    console.error('formatCardDate error:', e);
+    return 'Invalid Date';
   }
 }
 
@@ -59,19 +59,19 @@ export function formatCardDate(dateInput, fallback = "Date TBD") {
  * @param {string} fallback The string to return if the date is invalid or missing.
  * @returns {string} The formatted date string.
  */
-export function formatFullDate(dateInput, fallback = "Date TBD") {
+export function formatFullDate(dateInput, fallback = 'Date TBD') {
   if (!isValidDate(dateInput)) return fallback;
 
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     }).format(new Date(dateInput));
   } catch (e) {
-    console.error("formatFullDate error:", e);
-    return "Invalid Date";
+    console.error('formatFullDate error:', e);
+    return 'Invalid Date';
   }
 }
 
@@ -83,18 +83,18 @@ export function formatFullDate(dateInput, fallback = "Date TBD") {
  * @param {string} fallback The string to return if the time is invalid or missing.
  * @returns {string} The formatted time string.
  */
-export function formatTime(dateInput, fallback = "Time TBD") {
+export function formatTime(dateInput, fallback = 'Time TBD') {
   if (!isValidDate(dateInput)) return fallback;
 
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
       hour12: true, // Use 12-hour clock (e.g., 5:11 PM)
     }).format(new Date(dateInput));
   } catch (e) {
-    console.error("formatTime error:", e);
-    return "Invalid Time";
+    console.error('formatTime error:', e);
+    return 'Invalid Time';
   }
 }
 
@@ -104,20 +104,20 @@ export function formatTime(dateInput, fallback = "Time TBD") {
  * @param {string} fallback The string to return if the value is invalid or missing.
  * @returns {string} The formatted date-time string.
  */
-export function formatDateTime(dateInput, fallback = "Date/Time TBD") {
+export function formatDateTime(dateInput, fallback = 'Date/Time TBD') {
   if (!isValidDate(dateInput)) return fallback;
 
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
       hour12: true,
     }).format(new Date(dateInput));
   } catch (e) {
-    console.error("formatDateTime error:", e);
-    return "Invalid Date/Time";
+    console.error('formatDateTime error:', e);
+    return 'Invalid Date/Time';
   }
 }

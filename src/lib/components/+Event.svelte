@@ -7,16 +7,16 @@
     Users,
     ShieldCheck,
     Pen,
-  } from "lucide-svelte";
-  import { formatCardDate } from "$lib/helpers/dateTimeFormatter.js";
-  import { enhance } from "$app/forms";
-  import CreateUpdateModal from "./events/+CreateUpdateModal.svelte";
-  import DeleteModal from "./DeleteModal.svelte";
-  import { page } from "$app/stores";
-  import { toggleRegistration } from "$lib/helpers/events/toggleEvents";
+  } from 'lucide-svelte';
+  import { formatCardDate } from '$lib/helpers/dateTimeFormatter.js';
+  import { enhance } from '$app/forms';
+  import CreateUpdateModal from './events/+CreateUpdateModal.svelte';
+  import DeleteModal from './DeleteModal.svelte';
+  import { page } from '$app/stores';
+  import { toggleRegistration } from '$lib/helpers/events/toggleEvents';
   import { writable } from "svelte/store";
 
-  let { event } = $props();
+  const { event } = $props();
   const user = $page.data?.user;
 
   const displayDate = formatCardDate(event.date || event.startAt);
@@ -43,16 +43,16 @@
   const handleDeleted = () => location.reload();
 
   // Form data for editing
-  let formData = {
+  const formData = {
     id: event.id || null,
-    title: event.title || "",
-    description: event.description || "",
-    thumbnailUrl: event.thumbnail || "",
-    bannerUrl: event.banner || "",
-    date: event.date || "",
-    startAt: event.startAt || "",
-    endAt: event.endAt || "",
-    location: event.location || "",
+    title: event.title || '',
+    description: event.description || '',
+    thumbnailUrl: event.thumbnail || '',
+    bannerUrl: event.banner || '',
+    date: event.date || '',
+    startAt: event.startAt || '',
+    endAt: event.endAt || '',
+    location: event.location || '',
     points: event.points || 100,
     studyPoints: event.studyPoints || 0,
     maxParticipants: event.maxParticipants || 0,
@@ -77,7 +77,7 @@
 >
   <div class="relative h-44 overflow-hidden">
     <img
-      src={event.thumbnail || "https://picsum.photos/500/700"}
+      src={event.thumbnail || 'https://picsum.photos/500/700'}
       alt={event.title}
       class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
     />
@@ -171,7 +171,7 @@
           class={`flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold shrink-0 ${isFull ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}
         >
           <Users class="w-3 h-3" />
-          <span>{isFull ? "Full" : `${spotsLeft} Spots`}</span>
+          <span>{isFull ? 'Full' : `${spotsLeft} Spots`}</span>
         </div>
       {/if}
     </div>
@@ -199,7 +199,7 @@
           onclick={handleRegisterClick}
           onkeydown={(e) => e.key === "Enter" && handleRegisterClick(e)}
         >
-          {isRegistered ? "Deregister" : isFull ? "Full" : "Register Now"}
+          {isRegistered ? 'Deregister' : isFull ? 'Full' : 'Register Now'}
         </div>
       {/if}
     </div>
@@ -217,7 +217,7 @@
         action="events?/update"
         use:enhance={() => {
           return async ({ result }) => {
-            if (result.type === "success") location.reload();
+            if (result.type === 'success') location.reload();
           };
         }}
       >

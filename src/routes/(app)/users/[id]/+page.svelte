@@ -1,13 +1,12 @@
 <script lang="ts">
-  import LogoutModal from "$lib/components/LogoutModal.svelte";
+    import { goto } from '$app/navigation';
+  import LogoutModal from '$lib/components/LogoutModal.svelte';
 
   export let data;
   const { loggedInUser, profileUser } = data;
 
   let showLogoutConfirm = false;
 
-  console.log('Profile User:', profileUser?.user?.id);
-  console.log('Logged In User:', loggedInUser?.id );
   const isOwnProfile = loggedInUser?.id === profileUser?.user?.id;
 
   function logout() {
@@ -49,9 +48,9 @@
       </div>
 
       <div class="mt-6 flex gap-3">
-        <a href="/" class="flex-1 rounded-full bg-stone-300 py-2 text-center text-sm font-bold text-stone-700 hover:bg-stone-400">
+        <button on:click={() => goto('/')} class="flex-1 rounded-full bg-stone-300 py-2 text-center text-sm font-bold text-stone-700 hover:bg-stone-400">
           Back
-        </a>
+        </button>
 
         {#if isOwnProfile}
           <button class="flex-1 rounded-full bg-green-700 py-2 text-sm font-bold text-white hover:bg-green-600">

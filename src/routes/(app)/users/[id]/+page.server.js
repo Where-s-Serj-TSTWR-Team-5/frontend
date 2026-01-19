@@ -2,7 +2,7 @@ import { getData } from '$lib/helpers/ajaxhelper.js';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { error } from '@sveltejs/kit';
 
-export const load = async ({ params, parent, fetch }) => {
+export const load = async ({ params, parent }) => {
   // Get logged-in user from layout
   const { user: loggedInUser, token } = await parent();
 
@@ -14,7 +14,7 @@ export const load = async ({ params, parent, fetch }) => {
     });
 
     return { loggedInUser, profileUser };
-  } catch (err) {
+  } catch {
     throw error(500, 'Failed to load profile user');
   }
 };

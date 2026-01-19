@@ -17,8 +17,7 @@ export async function GET() {
         requiredPoints: r.requiredPoints,
       }))
     );
-  } catch (err) {
-    console.error('Frontend rewards fetch failed:', err);
+  } catch {
     return json({ message: 'Internal Error' }, { status: 500 });
   }
 }

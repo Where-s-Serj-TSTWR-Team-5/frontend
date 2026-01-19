@@ -21,7 +21,7 @@ export async function load({ fetch }) {
             };
         }
     } catch (error) {
-        console.error("Backend error:", error);
+        console.error('Backend error:', error);
     }
     return { leaders: null };
 }
