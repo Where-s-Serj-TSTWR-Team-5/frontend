@@ -71,5 +71,6 @@ function mapFormDataToPayload(data) {
         studyPoints: Number(data.get('studyPoints')),
         points: Number(data.get('points')),
         maxParticipants: Number(data.get('maxParticipants')),
+        labelId: data.get('labelId') ? Number(data.get('labelId')) : null
     };
 }

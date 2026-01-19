@@ -148,11 +148,17 @@
       class="absolute inset-0 bg-linear-to-t from-stone-50 via-stone-50/50 to-transparent"
     ></div>
     <div class="absolute bottom-0 left-0 right-0 p-6 pt-10">
+      {#if event.label}
       <span
         class="text-sm font-bold tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md"
       >
+<<<<<<< HEAD
         {event.category || 'Eco Event'}
+=======
+        {event.label.category}
+>>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
       </span>
+      {/if}
       <h1
         class="text-4xl lg:text-5xl font-extrabold text-stone-900 mt-2 leading-tight drop-shadow-lg"
       >
