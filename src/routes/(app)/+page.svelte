@@ -1,15 +1,15 @@
 <script>
-  import { Trophy, Leaf, Calendar } from "lucide-svelte";
-  import Event from "$lib/components/+Event.svelte";
-  import Plant from "$lib/components/+Plant.svelte";
-  import MapPlantItem from "$lib/components/+MapPlantItem.svelte";
-  import { goto } from "$app/navigation";
+  import { Trophy, Leaf, Calendar } from 'lucide-svelte';
+  import Event from '$lib/components/+Event.svelte';
+  import Plant from '$lib/components/+Plant.svelte';
+  import MapPlantItem from '$lib/components/+MapPlantItem.svelte';
+  import { goto } from '$app/navigation';
 
-  let { data } = $props();
+  const { data } = $props();
 
   // ✅ Svelte 5 reactive derived values (no "captured locally" warning)
-  let events = $derived(data?.events?.data ?? data?.events ?? []);
-  let plants = $derived(data?.plants?.data ?? data?.plants ?? []);
+  const events = $derived(data?.events?.data ?? data?.events ?? []);
+  const plants = $derived(data?.plants?.data ?? data?.plants ?? []);
 </script>
 
 

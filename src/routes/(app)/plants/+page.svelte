@@ -1,21 +1,19 @@
 <script lang="ts">
-  import { Search, X, Plus, Leaf } from 'lucide-svelte';
-  import { page } from '$app/stores';
+  import { Search, X, Plus } from 'lucide-svelte';
   import { enhance } from '$app/forms';
   import Plant from '$lib/components/+Plant.svelte';
   import CreateUpdateModal from '$lib/components/plants/+CreateUpdateModal.svelte';
-
 
   export let data: any;
 
   let searchQuery = '';
   let isModalOpen = false;
 
-  // adjust based on your API shape: either data.plants.data or data.plants
   const plants = data?.plants ?? [];
-  const user = $page.data?.user;
 
-  let formData = {
+  const user = data?.user;
+
+  const formData = {
     id: '',
     name: '',
     scientificName: '',
@@ -27,7 +25,9 @@
   const openModal = () => (isModalOpen = true);
   const closeModal = () => (isModalOpen = false);
 
-  $: filteredPlants = plants.filter((p) => {
+  let filteredPlants = plants;
+
+  $: filteredPlants = plants.filter((p: any) => {
     const q = searchQuery.toLowerCase();
     return (
       p.name?.toLowerCase().includes(q) ||
@@ -82,19 +82,18 @@
   </header>
 
   <main class="px-6">
-  {#if filteredPlants.length === 0}
-    <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-stone-300">
-      <p class="text-stone-400">No plants found matching "{searchQuery}".</p>
-    </div>
-  {:else}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {#if filteredPlants.length === 0}
+      <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-stone-300">
+        <p class="text-stone-400">No plants found matching "{searchQuery}".</p>
+      </div>
+    {:else}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each filteredPlants as plant (plant.id)}
-            <Plant {plant} />
+          <Plant {plant} />
         {/each}
-    </div>
-  {/if}
-</main>
-
+      </div>
+    {/if}
+  </main>
 
   {#if isModalOpen}
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">

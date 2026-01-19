@@ -1,5 +1,5 @@
 <script>
-  let { plant = {} } = $props();
+  const { plant = {} } = $props();
 
   const getLatestPlanted = (p) => {
     const arr = p?.plantedPlants;
@@ -14,22 +14,22 @@
   };
 
   const toCss = (v) => {
-    if (v === null || v === undefined || v === "") return null;
-    if (typeof v === "string") return v;
-    if (typeof v === "number") return `${v}%`; 
+    if (v === null || v === undefined || v === '') return null;
+    if (typeof v === 'string') return v;
+    if (typeof v === 'number') return `${v}%`; 
     return null;
   };
 
   const latest = getLatestPlanted(plant);
-  const top = toCss(latest?.mapY) ?? plant?.mapPosition?.top ?? "50%";
-  const left = toCss(latest?.mapX) ?? plant?.mapPosition?.left ?? "50%";
+  const top = toCss(latest?.mapY) ?? plant?.mapPosition?.top ?? '50%';
+  const left = toCss(latest?.mapX) ?? plant?.mapPosition?.left ?? '50%';
 
   
   const img = plant?.image;
-  const looksLikeUrl = typeof img === "string" && img.startsWith("http");
+  const looksLikeUrl = typeof img === 'string' && img.startsWith('http');
   const markerText = looksLikeUrl
-    ? (plant?.name?.[0] ?? "P").toUpperCase()
-    : (img ?? (plant?.name?.[0] ?? "P").toUpperCase());
+    ? (plant?.name?.[0] ?? 'P').toUpperCase()
+    : (img ?? (plant?.name?.[0] ?? 'P').toUpperCase());
 
   const toLevel = (v) => {
     const n = Number(v);
@@ -41,21 +41,21 @@
     const water = toLevel(latest?.waterLevel ?? 0);
     const sun = toLevel(latest?.sunlightLevel ?? 0);
 
-    if (water === 2 || sun === 2) return "critical";
-    if (water === 1 || sun === 1) return "warning";
-    return "healthy";
+    if (water === 2 || sun === 2) return 'critical';
+    if (water === 1 || sun === 1) return 'warning';
+    return 'healthy';
   };
 
   const status = plant?.status ?? getStatus(plant);
 
   const statusColors = {
 
-    critical: "bg-red-500",
-    warning: "bg-amber-400",
-    healthy: "bg-green-500"
+    critical: 'bg-red-500',
+    warning: 'bg-amber-400',
+    healthy: 'bg-green-500'
   };
 
-  const statusClass = statusColors[status] ?? "bg-green-500";
+  const statusClass = statusColors[status] ?? 'bg-green-500';
 </script>
   
 <a

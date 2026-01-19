@@ -1,14 +1,14 @@
 <script>
-  import { X, Leaf, Image, Tag, Info } from "lucide-svelte";
+  import { X, Leaf, Image, Tag, Info } from 'lucide-svelte';
 
-  let { closeModal, formData, action = "create", plantId = null } = $props();
+  const { closeModal, formData, action = 'create', plantId = null } = $props();
 
-  let localData = $derived({
+  const localData = $derived({
     ...formData
   });
 
   const handleBackdropClick = (e) => {
-    if (e.target.id === "modal-backdrop") closeModal();
+    if (e.target.id === 'modal-backdrop') closeModal();
   };
 
   const handleModalContentClick = (e) => {
@@ -22,7 +22,7 @@
   role="presentation"
   onclick={handleBackdropClick}
   onkeydown={(e) => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === 'Escape') closeModal();
   }}
 >
   <div
@@ -40,7 +40,7 @@
 
     <header class="sticky top-0 bg-white p-6 border-b border-gray-100 flex items-center justify-between z-10 shrink-0">
       <h2 id="modal-title" class="text-3xl font-extrabold text-gray-800">
-        {action === "update" ? "Edit Plant" : "New Plant Details"}
+        {action === 'update' ? 'Edit Plant' : 'New Plant Details'}
       </h2>
 
       <button
@@ -153,7 +153,7 @@
         type="submit"
         class="w-full py-4 rounded-xl text-white font-extrabold text-xl bg-green-600 hover:bg-green-700 shadow-xl cursor-pointer transition-all active:scale-[0.98]"
       >
-        {action === "update" ? "Save Changes" : "Create Plant"}
+        {action === 'update' ? 'Save Changes' : 'Create Plant'}
       </button>
     </div>
   </div>

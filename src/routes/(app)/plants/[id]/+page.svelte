@@ -1,7 +1,6 @@
 <!-- src/routes/plants/[id]/+page.svelte -->
 <script lang="ts">
   import LogoutModal from '$lib/components/LogoutModal.svelte';
-  import { page } from '$app/stores';
 
   import {
     ChevronLeft,
@@ -12,7 +11,6 @@
     Tag,
     Calendar,
     MapPin,
-    Pencil,
     Trash2,
     CheckCircle
   } from 'lucide-svelte';
@@ -21,18 +19,19 @@
   let showDeletedToast = false;
 
   onMount(() => {
-    if ($page.url.searchParams.get('deleted') === '1') {
-      showDeletedToast = true;
+  const deleted = new URL(window.location.href).searchParams.get('deleted');
+  if (deleted === '1') {
+    showDeletedToast = true;
 
-      // auto-hide after 3s
-      setTimeout(() => {
-        showDeletedToast = false;
-      }, 3000);
-    }
-  });
+    setTimeout(() => {
+      showDeletedToast = false;
+    }, 3000);
+  }
+});
+
 
   export let data;
-  const { user, plant, ownerHistory, token } = data;
+  const { plant, ownerHistory, token } = data;
 
   let showDeleteConfirm = false;
   let showWaterConfirm = false;
@@ -41,6 +40,7 @@
   const isOwner = true;
 
   // DELETE
+  /**
   async function deletePlant() {
     const res = await fetch(`/api/plants/${plant.id}`, {
       method: 'DELETE',
@@ -56,27 +56,30 @@
 
     window.location.href = '/';
   }
+    */
 
+  /**
   function goToEdit() {
     window.location.href = `/plants/${plant.id}/edit`;
   }
+    */
 
   async function wateredToday() {
-    const res = await fetch(`/api/plants/${plant.id}/watered-today`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    if (!res.ok) {
-      alert("Couldn't save watering. Please try again.");
-      return;
+  const res = await fetch(`/plants/${plant.id}/watered-today`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`
     }
+  });
 
-    // Refresh page data so latestPlanted.waterLevel becomes 0 in the UI
-    location.reload();
+  if (!res.ok) {
+    alert('Couldn\'t save watering. Please try again.');
+    return;
   }
+
+  location.reload();
+}
+
 
   const displayCreatedAt = plant?.createdAt
     ? new Intl.DateTimeFormat('en-US', {
@@ -246,6 +249,7 @@
             Watered today
           </button>
 
+
           {#if isOwner}
             <!-- This works but there's no edit page created for plants
             <button
@@ -327,15 +331,16 @@
 
   <!-- Confirm: watered today -->
   <LogoutModal
-  open={showWaterConfirm}
-  title="Mark as watered?"
-  message="Do you want to mark this plant as watered today?"
-  confirmText="Yes"
-  cancelText="Cancel"
-  onConfirm={() => {
-    showWaterConfirm = false;
-    (document.getElementById('water-form')as HTMLFormElement).requestSubmit();
-  }}
-  onCancel={() => (showWaterConfirm = false)}
-/>
+    open={showWaterConfirm}
+    title="Mark as watered?"
+    message="Do you want to mark this plant as watered today?"
+    confirmText="Yes"
+    cancelText="Cancel"
+    onConfirm={async () => {
+      showWaterConfirm = false;
+      await wateredToday();
+    }}
+    onCancel={() => (showWaterConfirm = false)}
+  />
+
 </div>
