@@ -35,7 +35,7 @@ Refer to the backend repository for setup and startup instructions.
 
 1. Clone the repository
 
-`git clone https://github.com/your-org/your-repository-name.git`
+`git clone https://github.com/Where-s-Serj-TSTWR-Team-5/repository-name.git`
 
 2. Navigate to the frontend directory
 
@@ -76,3 +76,4 @@ After starting both the backend and frontend:
 
 This frontend is released through this GitHub repository and can be downloaded and run locally by end users using the instructions above.
 Copyright lololol
+
