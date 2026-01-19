@@ -1,5 +1,9 @@
 <script>
-    import { formatForDateInput, formatForTimeInput } from "$lib/helpers/dateTimeFormatter";
+  import { page } from "$app/stores";
+  import {
+    formatForDateInput,
+    formatForTimeInput,
+  } from "$lib/helpers/dateTimeFormatter";
   import {
     X,
     Calendar,
@@ -16,12 +20,16 @@
   let { closeModal, formData, action = "create", eventId = null } = $props();
 
   // Initialize state by formatting the prefilled dates/times correctly
-  let localData = $state({ 
+  let localData = $state({
     ...formData,
     date: formData.date ? formatForDateInput(formData.date) : "",
     startAt: formData.startAt ? formatForTimeInput(formData.startAt) : "",
-    endAt: formData.endAt ? formatForTimeInput(formData.endAt) : ""
+    endAt: formData.endAt ? formatForTimeInput(formData.endAt) : "",
+    labelId: formData.labelId ? formData.labelId : "",
   });
+
+  const eventLabels = $page.data.eventLabels.data;
+  eventLabels.shift();
 
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") closeModal();
@@ -48,9 +56,7 @@
     aria-labelledby="modal-title"
     tabindex="0"
     onclick={handleModalContentClick}
-    onkeydown={(e) => {
-      e.stopPropagation();
-    }}
+    onkeydown={(e) => e.stopPropagation()}
   >
     {#if eventId}
       <input type="hidden" name="id" value={eventId} />
@@ -60,7 +66,7 @@
       class="sticky top-0 bg-white p-6 border-b border-gray-100 flex items-center justify-between z-10 shrink-0"
     >
       <h2 id="modal-title" class="text-3xl font-extrabold text-gray-800">
-        {action === 'update' ? 'Edit Event' : 'New Event Details'}
+        {action === "update" ? "Edit Event" : "New Event Details"}
       </h2>
       <button
         type="button"
@@ -73,6 +79,7 @@
     </header>
 
     <div class="p-8 space-y-10 grow overflow-y-auto">
+      <!-- Title & Description -->
       <section class="space-y-6">
         <div class="grid grid-cols-1 gap-4">
           <div class="flex flex-col">
@@ -105,6 +112,7 @@
         </div>
       </section>
 
+      <!-- Scheduling & Location -->
       <section class="space-y-6">
         <h3
           class="text-2xl font-bold text-gray-700 flex items-center gap-3 border-b pb-2 border-green-100"
@@ -170,6 +178,34 @@
         </div>
       </section>
 
+      <!-- Label Selection -->
+      <section class="space-y-6">
+        <h3
+          class="text-2xl font-bold text-gray-700 flex items-center gap-3 border-b pb-2 border-green-100"
+        >
+          <Sparkles class="w-6 h-6 text-green-600" /> Label
+        </h3>
+        <div class="flex flex-col">
+          <label for="labelId" class="text-sm font-semibold text-gray-700 mb-1"
+            >Event Label</label
+          >
+          <select
+            name="labelId"
+            id="labelId"
+            bind:value={localData.labelId}
+            class="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+          >
+            <option value="">None</option>
+            {#each eventLabels as label}
+              <option value={label.id}>
+                {label.category}
+              </option>
+            {/each}
+          </select>
+        </div>
+      </section>
+
+      <!-- Media -->
       <section class="space-y-6">
         <h3
           class="text-2xl font-bold text-gray-700 flex items-center gap-3 border-b pb-2 border-green-100"
@@ -206,6 +242,7 @@
         </div>
       </section>
 
+      <!-- Rewards & Capacity -->
       <section class="space-y-6">
         <h3
           class="text-2xl font-bold text-gray-700 flex items-center gap-3 border-b pb-2 border-green-100"
@@ -267,7 +304,7 @@
         type="submit"
         class="w-full py-4 rounded-xl text-white font-extrabold text-xl bg-green-600 hover:bg-green-700 shadow-xl cursor-pointer transition-all active:scale-[0.98]"
       >
-        {action === 'update' ? 'Save Changes' : 'Create Event'}
+        {action === "update" ? "Save Changes" : "Create Event"}
       </button>
     </div>
   </div>
