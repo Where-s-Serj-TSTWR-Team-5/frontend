@@ -1,7 +1,7 @@
 <script>
-  import { createEventDispatcher } from "svelte";
-  import { Trash2 } from "lucide-svelte";
-  import { page } from "$app/stores";
+  import { createEventDispatcher } from 'svelte';
+  import { Trash2 } from 'lucide-svelte';
+  import { page } from '$app/stores';
 
   export let eventId; // ID of the event to delete
   export let eventTitle; // Title to display in confirmation
@@ -11,13 +11,13 @@
   const token = $page.data?.token;
   async function deleteEvent() {
     if (!token) {
-      alert("You must be logged in to delete events");
+      alert('You must be logged in to delete events');
       return;
     }
 
     try {
       const res = await fetch(`http://localhost:3011/events/${eventId}`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -25,14 +25,14 @@
 
       if (res.ok) {
         closeModal();
-        dispatch("deleted", { id: eventId });
+        dispatch('deleted', { id: eventId });
       } else {
         const errorData = await res.json().catch(() => ({}));
-        alert("Failed to delete event: " + (errorData.message || res.status));
+        alert('Failed to delete event: ' + (errorData.message || res.status));
       }
     } catch (err) {
       console.error(err);
-      alert("Error deleting event.");
+      alert('Error deleting event.');
     }
   }
 </script>

@@ -31,7 +31,6 @@
     ? (plant?.name?.[0] ?? "P").toUpperCase()
     : (img ?? (plant?.name?.[0] ?? "P").toUpperCase());
 
-  
   const toLevel = (v) => {
     const n = Number(v);
     return n === 0 || n === 1 || n === 2 ? n : 0;
@@ -50,14 +49,14 @@
   const status = plant?.status ?? getStatus(plant);
 
   const statusColors = {
+
     critical: "bg-red-500",
     warning: "bg-amber-400",
     healthy: "bg-green-500"
   };
 
   const statusClass = statusColors[status] ?? "bg-green-500";
-</script>
-
+  
 <a
   href={`/plants/${plant.id}`}
   class="absolute group z-20"

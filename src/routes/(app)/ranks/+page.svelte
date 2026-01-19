@@ -5,7 +5,7 @@
 
   // This ensures that if the backend fails, the page still shows something.
   $: leaders = data?.leaders || [
-    { rank: 1, initial: "Y", name: "Khat 0007", points: 1000, highlight: true }
+    { rank: 1, initial: 'Y', name: 'Khat 0007', points: 1000, highlight: true }
   ];
 </script>
 

@@ -3,28 +3,24 @@
   import {
     formatForDateInput,
     formatForTimeInput,
-  } from "$lib/helpers/dateTimeFormatter";
+  } from '$lib/helpers/dateTimeFormatter';
   import {
     X,
     Calendar,
-    Clock,
     MapPin,
     Image,
-    TrendingUp,
-    Users,
     DollarSign,
-    Edit3,
     Sparkles,
-  } from "lucide-svelte";
+  } from 'lucide-svelte';
 
-  let { closeModal, formData, action = "create", eventId = null } = $props();
+  const { closeModal, formData, action = 'create', eventId = null } = $props();
 
   // Initialize state by formatting the prefilled dates/times correctly
-  let localData = $state({
+  const localData = $state({
     ...formData,
-    date: formData.date ? formatForDateInput(formData.date) : "",
-    startAt: formData.startAt ? formatForTimeInput(formData.startAt) : "",
-    endAt: formData.endAt ? formatForTimeInput(formData.endAt) : "",
+    date: formData.date ? formatForDateInput(formData.date) : '',
+    startAt: formData.startAt ? formatForTimeInput(formData.startAt) : '',
+    endAt: formData.endAt ? formatForTimeInput(formData.endAt) : '',
     labelId: formData.labelId ? formData.labelId : "",
   });
 
@@ -32,7 +28,7 @@
   eventLabels.shift();
 
   const handleBackdropClick = (e) => {
-    if (e.target.id === "modal-backdrop") closeModal();
+    if (e.target.id === 'modal-backdrop') closeModal();
   };
 
   const handleModalContentClick = (e) => {
@@ -46,7 +42,7 @@
   role="presentation"
   onclick={handleBackdropClick}
   onkeydown={(e) => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === 'Escape') closeModal();
   }}
 >
   <div

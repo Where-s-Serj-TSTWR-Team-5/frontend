@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from '$app/stores';
   import { PUBLIC_API_URL } from '$env/static/public';
 
   export let reward;
   export let userPoints;
   export let onCancel: () => void;
 
-  let loading = false;
-  let error = '';
+  const loading = false;
+  const error = '';
 
   $: canBuy = Number(userPoints) >= Number(reward.requiredPoints);
   const token = $page.data?.token;
 
   async function handleConfirm(rewardId: number) { 
     if (!token) {
-      alert("You must be logged in to purchase rewards");
+      alert('You must be logged in to purchase rewards');
       return;
     }
 
     try {
       const res = await fetch(`${PUBLIC_API_URL}/rewards/purchase/${rewardId}`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
       });
 
@@ -34,11 +34,11 @@
         
         window.location.reload(); 
       } else {
-        alert("Purchase failed: " + (data.message || "Unknown error"));
+        alert('Purchase failed: ' + (data.message || 'Unknown error'));
       }
     } catch (err) {
-      console.error("Connection error:", err);
-      alert("Error connecting to the server.");
+      console.error('Connection error:', err);
+      alert('Error connecting to the server.');
     }
 }
 </script>

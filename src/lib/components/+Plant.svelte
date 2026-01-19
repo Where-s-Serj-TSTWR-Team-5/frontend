@@ -1,5 +1,6 @@
 <script lang="ts">
-  let { plant = {} } = $props();
+  const { plant = {} } = $props();
+
 
   type Status = "critical" | "warning" | "healthy";
 

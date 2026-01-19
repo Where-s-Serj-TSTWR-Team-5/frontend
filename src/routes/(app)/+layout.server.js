@@ -1,8 +1,8 @@
-import { getData } from "$lib/helpers/ajaxhelper.js";
-import { PUBLIC_API_URL } from "$env/static/public";
-import { error, redirect } from "@sveltejs/kit";
+import { getData } from '$lib/helpers/ajaxhelper.js';
+import { PUBLIC_API_URL } from '$env/static/public';
+import { error, redirect } from '@sveltejs/kit';
 
-export const load = async ({ cookies, params, fetch }) => {
+export const load = async ({ cookies }) => {
   const token = cookies.get('token');
 
   if (!token) {

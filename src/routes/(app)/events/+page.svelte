@@ -1,34 +1,27 @@
 <script>
-  // @ts-nocheck
 
-  import {
-    Search,
-    X,
-    Calendar,
-    Check,
-    Plus,
-    MapPin,
-    Clock,
-  } from "lucide-svelte";
-  import Event from "$lib/components/+Event.svelte";
-  import { page } from "$app/stores";
-  import { enhance } from "$app/forms";
-  import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
-  let { data } = $props();
+  import { Search, X, Calendar, Check, Plus, MapPin, Clock } from 'lucide-svelte';
+  import Event from '$lib/components/+Event.svelte';
+  import { page } from '$app/stores';
+  import { enhance } from '$app/forms';
+  import CreateUpdateModal from '$lib/components/events/+CreateUpdateModal.svelte';
 
+  const { data } = $props();
+
+  let filter = $state('All');
   let filterCategory = $state("All");
   let searchQuery = $state("");
   let isModalOpen = $state(false);
 
-  let formData = $state({
-    title: "",
-    description: "",
-    thumbnailUrl: "",
-    bannerUrl: "",
-    date: "",
-    startAt: "",
-    endAt: "",
-    location: "",
+  const formData = $state({
+    title: '',
+    description: '',
+    thumbnailUrl: '',
+    bannerUrl: '',
+    date: '',
+    startAt: '',
+    endAt: '',
+    location: '',
     points: 100,
     studyPoints: 0,
     maxParticipants: 0,
@@ -39,7 +32,7 @@
   const eventLabels = $page.data?.eventLabels.data;
 
   // Reactive Logic for Main Feed
-  let filteredEvents = $derived(
+  const filteredEvents = $derived(
     events.filter((event) => {
       const query = searchQuery.toLowerCase();
       const matchesSearch =
@@ -81,7 +74,6 @@
           Events
         </h1>
       </div>
-
       <div class="flex items-center gap-2 w-full md:w-auto">
         <div
           class="flex-1 md:flex-none flex items-center bg-stone-100 rounded-lg p-2 md:w-64"
@@ -120,7 +112,23 @@
     >
       Join activities that protect nature & earn rewards.
     </p>
-
+  <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
+    {#each filters as f}
+      <button
+        onclick={() => (filter = f)}
+        class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
+          filter === f
+            ? 'bg-green-700 text-white border-green-700'
+            : 'bg-white text-stone-600 border-stone-200 hover:border-green-300'
+        }`}
+      >
+        {f}
+      </button>
+    {/each}
+  </div>
+</header>
+  {#if registeredEvents.length > 0 && !searchQuery && filter === 'All'}
+    <section class="px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
     <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
       <!-- Filter Buttons -->
@@ -239,7 +247,7 @@
         class="w-full max-w-2xl"
         use:enhance={() => {
           return async ({ result }) => {
-            if (result.type === "success") {
+            if (result.type === 'success') {
               location.reload();
             }
           };
