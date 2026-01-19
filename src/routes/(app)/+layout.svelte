@@ -1,9 +1,13 @@
+<svelte:head>
+  <title>Food Forest</title>
+</svelte:head>
+
 <script lang="ts">
   import '../../app.css';
 
   import { page } from '$app/stores'; 
   import { 
-    Home,
+    House,
     Trophy, 
     Calendar, 
     ShoppingBag,
@@ -12,7 +16,8 @@
 
   // Define navigation items
   const navItems = [
-    { href: '/', icon: Home, label: 'Home' },
+    { href: '/', icon: House, label: 'Home' },
+    { href: '/plants', icon: Leaf, label: 'Plants' },
     { href: '/events', icon: Calendar, label: 'Events' },
     { href: '/ranks', icon: Trophy, label: 'Ranks' },
     { href: '/shop', icon: ShoppingBag, label: 'Shop' },

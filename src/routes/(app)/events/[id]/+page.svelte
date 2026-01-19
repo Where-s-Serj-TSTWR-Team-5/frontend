@@ -152,11 +152,9 @@
       <span
         class="text-sm font-bold tracking-wider text-green-700 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md"
       >
-<<<<<<< HEAD
+
         {event.category || 'Eco Event'}
-=======
-        {event.label.category}
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
+        
       </span>
       {/if}
       <h1
