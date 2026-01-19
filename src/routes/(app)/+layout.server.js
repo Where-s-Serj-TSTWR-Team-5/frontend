@@ -28,7 +28,7 @@ export const load = async ({ cookies }) => {
     });
 
     return { user, events, token, eventLabels, plants };
-  } catch (err) {
+  } catch {
     throw error(500, 'Failed to load dashboard data');
   }
 };

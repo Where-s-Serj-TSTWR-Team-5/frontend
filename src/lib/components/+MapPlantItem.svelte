@@ -56,6 +56,7 @@
   };
 
   const statusClass = statusColors[status] ?? "bg-green-500";
+</script>
   
 <a
   href={`/plants/${plant.id}`}
