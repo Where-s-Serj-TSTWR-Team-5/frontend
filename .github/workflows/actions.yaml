@@ -26,6 +26,8 @@ jobs:
 
       - name: Run Code metrix
         run: npm run test:coverage
+        env:
+          ROLLUP_SKIP_NATIVE: true
 
       - name: Notify Teams
         if: always()
