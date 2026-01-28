@@ -24,6 +24,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Run Code metrix
+        run: npm run test:coverage
+
       - name: Notify Teams
         if: always()
         env:

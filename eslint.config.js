@@ -26,6 +26,9 @@ export default [
   // ---------------------------------------------------
   {
     rules: {
+      // Warn when functions become too complex
+      // Cyclomatic complexity > 10 triggers a warning
+      'complexity': ['warn', 10],
       // Warn on console statements, except these three allowed methods
       // - console.error: for actual errors
       // - console.warn: for warnings
