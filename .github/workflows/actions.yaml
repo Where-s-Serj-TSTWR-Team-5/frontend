@@ -16,13 +16,13 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Fix Rollup native binary
-        run: npm install rollup@^3 --no-save
+      - name: Sync SvelteKit (generate .svelte-kit)
+        run: npx svelte-kit sync
 
       - name: Run ESLint (static analysis)
         run: npm run lint
