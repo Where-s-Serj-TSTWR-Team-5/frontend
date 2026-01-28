@@ -23,7 +23,11 @@ export const load = async ({ cookies }) => {
 
     eventLabels.data.unshift({category: 'All'})
 
-    return { user, events, token, eventLabels };
+    const plants = await getData(`${PUBLIC_API_URL}/plants/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return { user, events, token, eventLabels, plants };
   } catch {
     throw error(500, 'Failed to load dashboard data');
   }

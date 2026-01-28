@@ -1,7 +1,6 @@
 <script>
   import {
     Trophy,
-    Leaf,
     Calendar,
     Sparkles,
     Users,
@@ -14,7 +13,7 @@
   import DeleteModal from './DeleteModal.svelte';
   import { page } from '$app/stores';
   import { toggleRegistration } from '$lib/helpers/events/toggleEvents';
-  import { writable } from "svelte/store";
+  import { writable } from 'svelte/store';
 
   const { event } = $props();
   const user = $page.data?.user;
@@ -104,7 +103,7 @@
       </div>
     </div>
 
-    {#if user?.role === "GREEN_OFFICE_MEMBER"}
+    {#if user?.role === 'GREEN_OFFICE_MEMBER'}
       <div class="absolute bottom-3 right-3 flex flex-row gap-2 items-end">
         <button
           type="button"
@@ -168,7 +167,7 @@
 
       {#if event.maxParticipants}
         <div
-          class={`flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold shrink-0 ${isFull ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}
+          class={`flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold shrink-0 ${isFull ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
         >
           <Users class="w-3 h-3" />
           <span>{isFull ? 'Full' : `${spotsLeft} Spots`}</span>
@@ -191,13 +190,13 @@
           class={`relative z-10 w-full flex items-center justify-center px-5 py-2 rounded-full text-base font-semibold shadow-lg transition-all duration-200 cursor-pointer
             ${
               isFull
-                ? "bg-red-700 text-white opacity-80"
+                ? 'bg-red-700 text-white opacity-80'
                 : isRegistered
-                  ? "bg-stone-700 text-white hover:bg-stone-800"
-                  : "bg-green-600 text-white group-hover:bg-green-700 group-hover:-translate-y-0.5"
+                  ? 'bg-stone-700 text-white hover:bg-stone-800'
+                  : 'bg-green-600 text-white group-hover:bg-green-700 group-hover:-translate-y-0.5'
             }`}
           onclick={handleRegisterClick}
-          onkeydown={(e) => e.key === "Enter" && handleRegisterClick(e)}
+          onkeydown={(e) => e.key === 'Enter' && handleRegisterClick(e)}
         >
           {isRegistered ? 'Deregister' : isFull ? 'Full' : 'Register Now'}
         </div>

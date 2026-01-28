@@ -1,5 +1,5 @@
 <script>
-  import { page } from "$app/stores";
+  import { page } from '$app/stores';
   import {
     formatForDateInput,
     formatForTimeInput,
@@ -21,7 +21,7 @@
     date: formData.date ? formatForDateInput(formData.date) : '',
     startAt: formData.startAt ? formatForTimeInput(formData.startAt) : '',
     endAt: formData.endAt ? formatForTimeInput(formData.endAt) : '',
-    labelId: formData.labelId ? formData.labelId : "",
+    labelId: formData.labelId ? formData.labelId : '',
   });
 
   const eventLabels = $page.data.eventLabels.data;
@@ -62,7 +62,7 @@
       class="sticky top-0 bg-white p-6 border-b border-gray-100 flex items-center justify-between z-10 shrink-0"
     >
       <h2 id="modal-title" class="text-3xl font-extrabold text-gray-800">
-        {action === "update" ? "Edit Event" : "New Event Details"}
+        {action === 'update' ? 'Edit Event' : 'New Event Details'}
       </h2>
       <button
         type="button"
@@ -300,7 +300,7 @@
         type="submit"
         class="w-full py-4 rounded-xl text-white font-extrabold text-xl bg-green-600 hover:bg-green-700 shadow-xl cursor-pointer transition-all active:scale-[0.98]"
       >
-        {action === "update" ? "Save Changes" : "Create Event"}
+        {action === 'update' ? 'Save Changes' : 'Create Event'}
       </button>
     </div>
   </div>

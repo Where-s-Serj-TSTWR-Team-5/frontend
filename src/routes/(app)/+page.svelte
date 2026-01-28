@@ -1,63 +1,17 @@
 <script>
   import { Trophy, Leaf, Calendar } from 'lucide-svelte';
-
   import Event from '$lib/components/+Event.svelte';
   import Plant from '$lib/components/+Plant.svelte';
   import MapPlantItem from '$lib/components/+MapPlantItem.svelte';
-    import { goto } from '$app/navigation';
+  import { goto } from '$app/navigation';
 
   const { data } = $props();
-  const events = data.events.data;
 
-  // --- Mock Data ---
-  const PLANTS = [
-    {
-      id: 1,
-      name: 'Mango',
-      type: 'Fruit Tree',
-      status: 'critical',
-      image: '🥭',
-      statusDetails: 'Water: Sufficient, Sunlight: Critical',
-      mapPosition: { top: '65%', left: '30%' },
-    },
-    {
-      id: 2,
-      name: 'Carrot',
-      type: 'Root Vegetable',
-      status: 'warning',
-      image: '🥕',
-      statusDetails: 'Water: Sufficient, Sunlight: Insufficient',
-      mapPosition: { top: '35%', left: '70%' },
-    },
-    {
-      id: 3,
-      name: 'Tomato',
-      type: 'Heritage Beefsteak',
-      status: 'healthy',
-      image: '🍅',
-      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
-      mapPosition: { top: '50%', left: '45%' },
-    },
-    {
-      id: 4,
-      name: 'Pear',
-      type: 'Fruit Tree',
-      status: 'healthy',
-      image: '🍐',
-      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
-      mapPosition: { top: '40%', left: '25%' },
-    },
-    {
-      id: 5,
-      name: 'Basil',
-      type: 'Herb',
-      status: 'healthy',
-      image: '🌿',
-      statusDetails: 'Water: Sufficient, Sunlight: Sufficient',
-      mapPosition: { top: '70%', left: '60%' },
-    },
-  ];
+  // ✅ Svelte 5 reactive derived values (no "captured locally" warning)
+  const events = $derived(data?.events?.data ?? data?.events ?? []);
+  const plants = $derived(data?.plants?.data ?? data?.plants ?? []);
 </script>
+
 
 <div class="max-w-7xl mx-auto w-full">
   <header class="flex justify-between items-center px-6 pt-8 pb-6 md:pb-10">
@@ -102,7 +56,7 @@
         />
 
         <!-- Plants -->
-        {#each PLANTS as plant}
+        {#each plants as plant}
           <MapPlantItem {plant} />
         {/each}
       </div>
@@ -110,7 +64,7 @@
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 pb-4"
       >
-        {#each PLANTS as plant}
+        {#each plants as plant}
           <Plant {plant} />
         {/each}
       </div>
