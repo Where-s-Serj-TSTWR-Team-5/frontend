@@ -1,5 +1,4 @@
 <script>
-<<<<<<< HEAD
   import { Search, X, Calendar, Check, Plus, MapPin } from 'lucide-svelte';
   import Event from '$lib/components/+Event.svelte';
   import { page } from '$app/stores';
@@ -10,27 +9,6 @@
 
   let filter = $state('All');
   let searchQuery = $state('');
-=======
-  // @ts-nocheck
-
-  import {
-    Search,
-    X,
-    Calendar,
-    Check,
-    Plus,
-    MapPin,
-    Clock,
-  } from "lucide-svelte";
-  import Event from "$lib/components/+Event.svelte";
-  import { page } from "$app/stores";
-  import { enhance } from "$app/forms";
-  import CreateUpdateModal from "$lib/components/events/+CreateUpdateModal.svelte";
-  let { data } = $props();
-
-  let filterCategory = $state("All");
-  let searchQuery = $state("");
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
   let isModalOpen = $state(false);
 
   const formData = $state({
@@ -47,7 +25,6 @@
     maxParticipants: 0,
   });
 
-<<<<<<< HEAD
   const filters = [
     'All',
     'Gardening',
@@ -56,8 +33,6 @@
     'Clean-up',
   ];
 
-=======
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
   const events = data.events.data;
   const user = $page.data?.user;
   const eventLabels = $page.data?.eventLabels.data;
@@ -70,29 +45,16 @@
         event.title.toLowerCase().includes(query) ||
         (event.subtitle && event.subtitle.toLowerCase().includes(query));
 
-<<<<<<< HEAD
       const matchesCategory = filter === 'All' || event.category === filter;
-=======
-      const matchesCategory =
-        filterCategory === "All" ||
-        (event.label?.category ?? "") === filterCategory;
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
 
       return matchesSearch && matchesCategory;
     }),
   );
 
-<<<<<<< HEAD
   const registeredEvents = $derived(
     events.filter((event) => 
       user?.eventRegistrations?.some((reg) => reg.eventId === event.id)
     )
-=======
-  let registeredEvents = $derived(
-    events.filter((event) =>
-      user?.eventRegistrations?.some((reg) => reg.eventId === event.id),
-    ),
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
   );
 
   const openModal = () => (isModalOpen = true);
@@ -117,7 +79,6 @@
         </h1>
       </div>
 
-<<<<<<< HEAD
     <div class="flex items-center gap-2 w-full md:w-auto">
       <div class="flex-1 md:flex-none flex items-center bg-stone-100 rounded-lg p-2 md:w-64">
         <Search class="w-4 h-4 text-stone-400 ml-1" />
@@ -130,36 +91,6 @@
         {#if searchQuery}
           <button class="cursor-pointer p-1" onclick={() => (searchQuery = '')}>
             <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
-=======
-      <div class="flex items-center gap-2 w-full md:w-auto">
-        <div
-          class="flex-1 md:flex-none flex items-center bg-stone-100 rounded-lg p-2 md:w-64"
-        >
-          <Search class="w-4 h-4 text-stone-400 ml-1" />
-          <input
-            type="text"
-            placeholder="Search events..."
-            bind:value={searchQuery}
-            class="bg-transparent border-none outline-none text-sm w-full text-stone-800 px-2 cursor-text"
-          />
-          {#if searchQuery}
-            <button
-              class="cursor-pointer p-1"
-              onclick={() => (searchQuery = "")}
-            >
-              <X class="w-4 h-4 text-stone-400 hover:text-stone-600" />
-            </button>
-          {/if}
-        </div>
-
-        {#if user?.role === "GREEN_OFFICE_MEMBER"}
-          <button
-            onclick={openModal}
-            class="p-2.5 rounded-lg bg-green-700 hover:bg-green-800 text-white transition-colors shadow-md cursor-pointer shrink-0"
-            title="Create New Event"
-          >
-            <Plus class="w-5 h-5" />
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
           </button>
         {/if}
       </div>
@@ -171,7 +102,6 @@
       Join activities that protect nature & earn rewards.
     </p>
 
-<<<<<<< HEAD
   <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
     {#each filters as f}
       <button
@@ -190,29 +120,6 @@
 
   {#if registeredEvents.length > 0 && !searchQuery && filter === 'All'}
     <section class="px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-=======
-    <div class="flex overflow-x-auto space-x-2 mt-6 pb-1 scrollbar-hide">
-      <!-- Filter Buttons -->
-      {#each eventLabels as label}
-        <button
-          onclick={() => (filterCategory = label.category)}
-          class={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors border cursor-pointer ${
-            filterCategory === label.category
-              ? "bg-green-700 text-white border-green-700"
-              : "bg-white text-stone-600 border-stone-200 hover:border-green-300"
-          }`}
-        >
-          {label.category}
-        </button>
-      {/each}
-    </div>
-  </header>
-
-  {#if registeredEvents.length > 0 && !searchQuery && filterCategory == "All"}
-    <section
-      class="px-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
-    >
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-serif text-2xl italic font-bold text-stone-800">
           Registered Events
@@ -233,19 +140,10 @@
             class="flex-shrink-0 w-72 bg-white rounded-2xl shadow-sm border border-stone-200 p-4 hover:shadow-md transition-shadow group"
           >
             <div class="flex gap-4">
-<<<<<<< HEAD
               <div class="w-16 h-16 rounded-xl overflow-hidden bg-stone-100 shrink-0">
                 <img 
                   src={event.thumbnail || 'https://picsum.photos/200'} 
                   alt={event.title} 
-=======
-              <div
-                class="w-16 h-16 rounded-xl overflow-hidden bg-stone-100 shrink-0"
-              >
-                <img
-                  src={event.thumbnail || "https://picsum.photos/200"}
-                  alt={event.title}
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
@@ -282,17 +180,9 @@
 
   <main class="px-6">
     <div class="flex items-center justify-between mb-4">
-<<<<<<< HEAD
         <h2 class="font-serif text-2xl italic font-bold text-stone-800">
             {filter === 'All' ? 'Explore Events' : `${filter} Events`}
         </h2>
-=======
-      <h2 class="font-serif text-2xl italic font-bold text-stone-800">
-        {filterCategory == "All"
-          ? "Explore Events"
-          : `${filterCategory} Events`}
-      </h2>
->>>>>>> 9fb37853efd12acbcac79c58961cf339ce4cb05d
     </div>
 
     {#if filteredEvents.length === 0}
