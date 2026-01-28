@@ -21,12 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fix Rollup native binary
+        run: npm install rollup@^3 --no-save
+
       - name: Run ESLint (static analysis)
         run: npm run lint
 
       - name: Run code metrics (coverage)
-        env:
-          ROLLUP_SKIP_NATIVE: true
         run: npm run test:coverage
 
       - name: Notify Teams
