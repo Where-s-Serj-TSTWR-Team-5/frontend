@@ -21,13 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
+      - name: Run ESLint (static analysis)
         run: npm run lint
 
-      - name: Run Code metrix
-        run: npm run test:coverage
+      - name: Run code metrics (coverage)
         env:
           ROLLUP_SKIP_NATIVE: true
+        run: npm run test:coverage
 
       - name: Notify Teams
         if: always()
@@ -41,6 +41,6 @@ jobs:
                     \"summary\": \"Build Notification\",
                     \"themeColor\": \"0076D7\",
                     \"title\": \"CI Build Result\",
-                    \"text\": \"Status: **${STATUS}**\"
+                    \"text\": \"Status: **${STATUS}**\" 
                   }" \
                ${{ secrets.TEAMS_WEBHOOK_URL }}
