@@ -8,26 +8,28 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      ROLLUP_SKIP_NATIVE: true
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Clean install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
-      - name: Sync SvelteKit (generate .svelte-kit)
+      - name: Sync SvelteKit
         run: npx svelte-kit sync
 
-      - name: Run ESLint (static analysis)
+      - name: Run ESLint
         run: npm run lint
 
-      - name: Run code metrics (coverage)
+      - name: Run coverage
         run: npm run test:coverage
 
       - name: Notify Teams
